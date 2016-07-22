@@ -1,8 +1,6 @@
 import pandas
-import myvariant
-import logging
-from variantAnnotation import genotype_calling
-from variantAnnotation import utilities
+from variantannotation import genotype_calling
+from variantannotation import utilities
 
 
 def get_list_from_annovar_csv(df, chunk_ids):

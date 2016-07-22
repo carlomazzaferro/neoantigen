@@ -1,6 +1,6 @@
 import os
 import sys
-
+import math
 #quick and dirty way of importing functions
 sys.path.append("/Users/carlomazzaferro/Documents/Bioinformatics Internship/Python Codes")
 
@@ -9,27 +9,10 @@ from utilities import final_joint
 import myvariant_parsing_utils
 from annovar_processing import get_list_from_annovar_csv
 
-import mongo_DB_export
+from mongo_DB_export import export
+
 import annovar_subprocess
 import csv_to_df
-
-#set by user
-#filepath = "/Users/carlomazzaferro/Desktop/CSV to be tested"
-#file_name = "Tumor_targeted_processed.csv"
-#vcf_file = "Tumor_targeted_seq.vqsr.vcf"
-
-#0s.chdir(filepath)
-
-
-#chunksize = 1000
-#step = 0
-#open_file = myvariant_parsing_utils.VariantParsing()
-#variant_list = open_file.get_variants_from_vcf(vcf_file)
-#    chunksize = 1000
-#    step = 0
-#     open_file = myvariant_parsing_utils.VariantParsing()
-#    variant_list = open_file.get_variants_from_vcf(vcf_file)
-
 
 class AnnotationMethods(object):
 
@@ -58,10 +41,11 @@ class AnnotationMethods(object):
 
             # From unicode to string
             joined_list = convert(joined_list)
-            #mongo_DB_export.export(joined_list)
+
+            print 'Parsing to MongoDB ...'
+            export(joined_list)
             step = step + 1
-            print step
-            print joined_list[0].keys()
+            print 'Step: {} of {}'.format(step, (len(variant_list)/1000)-1)
 
         return joined_list, chunksize*step
 
@@ -73,14 +57,29 @@ class AnnotationMethods(object):
         from_myvariant = open_file.get_dict_myvariant(variant_list)
         final_joint(from_annovar, from_myvariant)
         joined_list = from_annovar
+        joined_list = convert(joined_list)
 
         return joined_list
 
+    def myvariant_chunks(self, variant_list, chunksize, step,):
 
-    def parallelized(self, variant_list, file_name):
-        
+        while step * chunksize < len(variant_list):
+
+            chunk_ids = variant_list[chunksize * step:chunksize * (step + 1)]
+            open_file = myvariant_parsing_utils.VariantParsing()
+            from_myvariant = open_file.get_dict_myvariant(chunk_ids)
+            export(from_myvariant)
+
+        return 'Done'
+
+    def my_variant_at_once(self, variant_list):
+
+        open_file = myvariant_parsing_utils.VariantParsing()
+        from_myvariant = open_file.get_dict_myvariant(variant_list)
+
+        return from_myvariant
 
 
 
 
-#xxx = AnnotationMethods.by_chunks()
+  #  def parallelized(self, variant_list, file_name):

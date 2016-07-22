@@ -116,28 +116,11 @@ def convert(data):
     except:
         pass
 
-"""
-def clean_dict(list_filtered):
-    #Function for removing bad keys and introducing the MT notation for chromosomes.
-    for i in range(0, len(list_filtered)):
-        if 'M' in list_filtered[i]['hgvs_key']:
-            one = list_filtered[i]['hgvs_key'].split(':')[0]
-            two = list_filtered[i]['hgvs_key'].split(':')[1]
-            if 'MT' not in one:
-                one = 'chrMT'
-
-            list_filtered[i]['hgvs_key'] = one + ':' + two
-
-    return list_filtered
-"""
-
-
 
 def final_joint(list1, list2):
     print 'Joining lists ...'
     for i in range(0, len(list2)):
         list1[i].update(list2[i])
-    print 'DONE'
     return list2
 
 def get_paths(PATHS_file):

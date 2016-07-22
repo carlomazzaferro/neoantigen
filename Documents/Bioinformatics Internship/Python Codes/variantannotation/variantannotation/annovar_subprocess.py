@@ -2,7 +2,7 @@ import subprocess
 import shlex
 import utilities
 
-PATHS_path = '/Users/carlomazzaferro/Documents/Bioinformatics Internship/Python Codes/variantAnnotation/PATHS.txt'
+PATHS_path = '/Users/carlomazzaferro/Documents/Bioinformatics Internship/Python Codes/variantannotation/variantannotation/PATHS.txt'
 annovar_path, input_vcf_path, output_csv_path = utilities.get_paths(PATHS_path)
 
 def run_annovar():
