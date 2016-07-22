@@ -1,0 +1,4 @@
+#Set them to whatever you're using
+ANNOVAR_PATH = /database/annovar/
+IN_PATH = /data/Nof1/file.vcf
+OUT_PATH_ = /data/ccbb_internal/interns/Carlo/annovar_results
