@@ -38,5 +38,5 @@ protein_list = myhandler.return_protein_list(list_coding_effects)
 dataframe = myhandler.return_dataframe(protein_list, list_coding_effects)
 
 #Generate fasta file for post-processing
-myhandler.generate_fasta_file(dataframe)
+myhandler.generate_fasta_file(dataframe, path_to_files+'peps.txt')
 ```
