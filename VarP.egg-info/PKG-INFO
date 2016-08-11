@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: VarP
-Version: 0.1.1
+Version: 0.1.2
 Summary: This package is aimed at providing a way of retrieving epitope candidates from a vcf fileinstance.
 Home-page: https://github.com/Mazzafish/neoantigen
 Author: Carlo Mazzaferro

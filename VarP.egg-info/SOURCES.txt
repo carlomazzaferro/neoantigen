@@ -1,6 +1,7 @@
 setup.py
 VarP/__init__.py
 VarP/main.py
+VarP/netMHCpan_pred.py
 VarP/predict_epitopes.py
 VarP/utils.py
 VarP.egg-info/PKG-INFO
