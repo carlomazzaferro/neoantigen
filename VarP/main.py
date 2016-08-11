@@ -1,3 +1,8 @@
+
+import sys
+sys.path.append('/Users/carlomazzaferro/Documents/CCBB/neoantigen/VarP-master/')
+
+import glob
 from VarP import utils
 
 reader_names = ['Tumor_RNA_Reader', 'Tumor_Targeted_Reader',
@@ -5,6 +10,10 @@ reader_names = ['Tumor_RNA_Reader', 'Tumor_Targeted_Reader',
            'Somatic_Mutect_Reader']
 
 path_to_files = '/Volumes/Seagate Backup Plus Drive/vcf_files/varcode_to_test/'
+path_to_files2 = '/Users/carlomazzaferro/Documents/CCBB/neoantigen/VarP-master/VarP/tests'
+
+files = glob.glob1(path_to_files2, "*.vcf")
+
 
 myhandler = utils.HandleReaders(reader_names)
 list_collections = myhandler.create_collection_from_readers(path_to_files)
@@ -20,4 +29,5 @@ protein_list = myhandler.return_protein_list(list_coding_effects)
 dataframe = myhandler.return_dataframe(protein_list, list_coding_effects)
 
 #Fasta file
-myhandler.generate_fasta_file(dataframe)
+myhandler.generate_fasta_file(dataframe, path_to_files+'peps.txt')
+
