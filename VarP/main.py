@@ -9,10 +9,8 @@ reader_names = ['Tumor_RNA_Reader', 'Tumor_Targeted_Reader',
            'Normal_DNA_Reader', 'Normal_Blood_Reader',
            'Somatic_Mutect_Reader']
 
-path_to_files = '/Volumes/Seagate Backup Plus Drive/vcf_files/varcode_to_test/'
-path_to_files2 = '/Users/carlomazzaferro/Documents/CCBB/neoantigen/VarP-master/VarP/tests'
 
-files = glob.glob1(path_to_files2, "*.vcf")
+path_to_files = '/Volumes/Seagate Backup Plus Drive 1/vcf_files/varcode_to_test/'
 
 
 myhandler = utils.HandleReaders(reader_names)
