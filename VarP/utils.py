@@ -1,6 +1,8 @@
-from varcode import load_maf, load_vcf
-import pandas as pd
 import os
+import re
+import glob
+import pandas as pd
+from varcode import load_vcf
 
 
 class HandleReaders(object):
@@ -18,20 +20,19 @@ class HandleReaders(object):
         :param path_to_dir: directory where the fiktered vcf files reside
         :return: list of reader objects
         """
-
         os.chdir(path_to_dir)
         reader_list = []
-        files = os.listdir(path_to_dir)
+        files = glob.glob("*.vcf")
         files.sort()
         self.readers.sort()
 
         for i in range(0, len(files)):
-            if len(os.listdir(path_to_dir)) != len(self.readers):
+            if len(files) != len(self.readers):
+                print files
                 raise ValueError("Number of reader names and number of vcf files doesn't match")
 
-            if files[i].endswith(".vcf"):
-                self.readers[i] = load_vcf(files[i])
-                reader_list.append(self.readers[i])
+            self.readers[i] = load_vcf(files[i])
+            reader_list.append(self.readers[i])
 
         return reader_list
 
@@ -74,16 +75,26 @@ class HandleReaders(object):
         rem_dup = self.rem_duplicates(prot_list, effects)
         return rem_dup
 
-    @staticmethod
-    def generate_fasta_file(df):
+    def generate_fasta_file(self, df, file_path_and_name):
+
         unique_prot_list = list(df.prot.values)
         var_names = df.variants.apply(lambda x: str(x))
         unique_var_name = list(var_names)
+        unique_var_name = self.clean_list_coding_effects(unique_var_name)
 
-        with open('/Volumes/Seagate Backup Plus Drive/vcf_files/varcode_to_test/Peptides_RNA.txt', 'w') as outfile:
+        with open(file_path_and_name, 'w') as outfile:
             for i in range(0, len(unique_var_name)):
-                outfile.write(">" + unique_var_name[i] + "\n" + unique_prot_list[i] + "\n")
+                outfile.write(unique_var_name[i] + "\n" + unique_prot_list[i] + "\n")
         outfile.close()
+
+    @staticmethod
+    def clean_list_coding_effects(effects_clean):
+        long_string = []
+        for i in effects_clean:
+            l = re.split(r"[\s,]+", i)
+            long_string.append('>' + '-'.join(l))
+
+        return long_string
 
     @staticmethod
     def remove_empty_variants(variant_list):
