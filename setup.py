@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='VarP',
-      version='0.1.2',
+      version='0.1.3',
       description='This package is aimed at providing a way of retrieving epitope candidates from a vcf file'
                   'instance.',
       url='https://github.com/Mazzafish/neoantigen',
