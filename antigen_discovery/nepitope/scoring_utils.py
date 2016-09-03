@@ -3,6 +3,10 @@ import shlex
 import subprocess
 import pandas
 import glob
+from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
+from Bio.Seq import Seq
+import logging
 
 
 class Score(object):
@@ -29,6 +33,7 @@ class Score(object):
                             outfile.write(line + '\n')
                         else:
                             outfile.write(line[i:i + j] + '\n')
+        return "All files written to %s" % out_nmers_path
 
     @staticmethod
     def create_lists(fasta_file):
@@ -59,13 +64,71 @@ class Score(object):
         list_dfs = []
         for i in range(0, len(self.nmers)):
             for files in glob.glob(out_nmers_path + "processed_nmerized_%i*" % self.nmers[i]):
-                print files
                 list_dfs.append(self.get_dfs(files))
 
         scores = self.calculate_avg(list_dfs)
 
         return scores
 
+    def create_large_fasta(self, out_nmers_path):
+
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(message)s',
+                            datefmt='%a, %d %b %Y %H:%M:%S')
+
+        for i in range(0, len(self.nmers)):
+            list_files = glob.glob(out_nmers_path + "/nmerized_%i*" % self.nmers[i])
+
+            with open(out_nmers_path + 'consolidated_fasta_%i.fasta' % self.nmers[i], 'w') as w_file:
+                for filen in list_files:
+                    with open(filen, 'rU') as o_file:
+                        seq_records = SeqIO.parse(o_file, 'fasta')
+                        SeqIO.write(seq_records, w_file, 'fasta')
+
+        consolidated = glob.glob(out_nmers_path + "/consolidated*")
+
+        for i in range(0, len(consolidated)):
+            df = Score.return_df(consolidated[i])
+            filtered_name = out_nmers_path + 'filtered_' + consolidated[i].split('/')[-1]
+            Score.dataframe_to_fasta(df, outfile=filtered_name)
+            len_file = Score.get_length(filtered_name)
+            print 'File filtered_consolidated_fasta_%i.fasta written to %s' % (self.nmers[i], out_nmers_path)
+
+            if len_file > 1000:
+                logging.info('File length > 1000. Will have to split file in smaller chunks. Use split_fasta before '
+                                'running netMHCcons prediction.')
+
+    @staticmethod
+    def get_length(file_name):
+        num_lines = sum(1 for line in open(file_name))
+        return num_lines
+
+    @staticmethod
+    def return_df(fasta_file):
+        recs = SeqIO.parse(fasta_file, 'fasta')
+        keys = ['locus_tag', 'translation', 'description']
+        data = [(r.name, str(r.seq), str(r.description)) for r in recs]
+        df = pandas.DataFrame(data, columns=(keys))
+        df = Score.clean_df(df)
+        return df.drop_duplicates(subset='translation')
+
+    @staticmethod
+    def clean_df(df):
+        df = df[df['translation'].str.contains('-') == False]
+        return df
+
+    @staticmethod
+    def dataframe_to_fasta(df, seqkey='translation', idkey='locus_tag',
+                           descrkey='description',
+                           outfile='out.faa'):
+
+        seqs = []
+        for i, row in df.iterrows():
+            rec = SeqRecord(Seq(row[seqkey]), id=row[idkey],
+                            description=row[descrkey])
+            seqs.append(rec)
+        SeqIO.write(seqs, outfile, "fasta")
+        return outfile
 
     @staticmethod
     def create_score_file(files, out_nmers_path):
@@ -102,7 +165,6 @@ class Score(object):
 
         return df
 
-
     @staticmethod
     def calculate_avg(list_dfs):
         list_values = []
@@ -115,7 +177,39 @@ class Score(object):
         return list_values
 
 
+def split_fasta_file(out_nmers_path, nmer):
+    """
+    Split fasta file so that it contains at each file contains at most ~300 peptides
 
+    :param out_nmers_path: path of filtered_consolidated fasta files
+    :return: split files
+    """
 
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S')
 
+    filtered = glob.glob(out_nmers_path + "/filtered_consolidated_fasta_%i*" % nmer)
+    for i in range(0, len(filtered)):
 
+        len_file = Score.get_length(filtered[i])
+        num_file_splits = (len_file / 300) + 1
+        logging.info('Files will be split into %i files' % num_file_splits)
+        list_fasta = []
+
+        with open(filtered[i], 'r') as infile:
+            for line in infile:
+                list_fasta.append(line.rstrip())
+
+        for j in range(0, num_file_splits):
+            new_file_names = out_nmers_path + "/split_%i_" % j + filtered[i].split('/')[-1]
+
+            if (j + 1) * 300 < len_file:
+                list_slice = list_fasta[j * 300:(j + 1) * 300]
+            else:
+                list_slice = list_fasta[j * 300::]
+            with open(new_file_names, 'w') as outfile:
+                for item in list_slice:
+                    outfile.write("%s\n" % item)
+
+            print 'File %s written to %s' % (new_file_names.split('/')[-1], out_nmers_path)
