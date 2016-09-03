@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/Users/carlomazzaferro/Documents/CCBB/antigen_discovery")
+sys.path.append("/Users/carlomazzaferro/Documents/Code/neantigen/antigen_discovery")
 
 from nepitope import alignment_tool
 
