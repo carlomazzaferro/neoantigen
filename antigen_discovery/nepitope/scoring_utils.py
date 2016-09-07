@@ -213,3 +213,123 @@ def split_fasta_file(out_nmers_path, nmer):
                     outfile.write("%s\n" % item)
 
             print 'File %s written to %s' % (new_file_names.split('/')[-1], out_nmers_path)
+
+
+class FileConsolidation(object):
+
+    stable_cols = ['Pos', 'Peptide', 'ID']
+
+    def __init__(self, filepath, file_pattern):
+        """
+
+        :param fasta_input:
+        :param nmers:
+        """
+        self.filepath = filepath
+        self.file_pattern = file_pattern
+        self.files = glob.glob(self.filepath + self.file_pattern)
+        self.allele_list = self.get_allele_list(self.files)
+
+    def load_batch(self):
+
+        os.chdir(self.filepath)
+        list_dfs = []
+        list_summaries = []
+
+        for files in self.files:
+
+            df = pandas.read_csv(files, sep='\t', skiprows=1)
+            processed, summary = self.concat_sliced(df)
+            list_dfs.append(processed)
+            list_summaries.append(summary)
+
+        return list_dfs, list_summaries
+
+    def concat_sliced(self, df):
+
+        sliced_cols = self.slice_over_df(df)
+        list_dfs = []
+
+        for i in sliced_cols:
+            list_dfs.append(self.rename_cols(df[i]))
+
+        major, summary = self.return_concat(self.add_allele_name(list_dfs, self.allele_list))
+
+        return major, summary
+
+    @staticmethod
+    def concat_batches(list_dfs, list_summaries):
+        conc1 = pandas.concat(list_dfs)
+        conc2 = pandas.concat(list_summaries)
+        return conc1, conc2
+
+    @staticmethod
+    def label_affinity(row):
+        if row['nM'] < 50.0:
+            return 'High'
+        if 50.0 < row['nM'] < 500.0:
+            return 'Intermediate'
+        if 500.0 < row['nM'] < 5000.0:
+            return 'Low'
+        if row['nM'] > 5000.0:
+            return 'No'
+
+    def aggregate_inf0(self, df1, df2):
+        merged = pandas.merge(df1, df2, on=FileConsolidation.stable_cols)
+        merged['Affinity Level'] = merged.apply(lambda row: self.label_affinity(row), axis=1)
+        return merged
+
+    @staticmethod
+    def get_allele_list(files):
+        unique_alleles = []
+        for filename in files:
+            df1 = pandas.read_csv(filename, sep='\t')
+            cols = list(df1.columns)
+
+            for item in cols:
+                if item.startswith('HL'):
+                    unique_alleles.append(item)
+
+        return unique_alleles
+
+    @staticmethod
+    def slice_over_df(df):
+
+        all_cols = list(df.columns)
+        list_cols = []
+
+        for i in xrange(3, len(all_cols), 3):
+
+            sliced = all_cols[i:(i + 3)]
+            sliced.extend(FileConsolidation.stable_cols)
+            list_cols.append(sliced)
+
+        return list_cols
+
+    @staticmethod
+    def rename_cols(df):
+
+        col_names = list(df.columns)
+
+        for i in col_names:
+            if '.' in i:
+                df = df.rename(columns={i: i.split('.')[0]})
+
+        return df
+
+    @staticmethod
+    def add_allele_name(list_dfs, allele_list):
+
+        for i in range(0, len(list_dfs[:-1])):
+            list_dfs[i]['Allele'] = allele_list[i]
+
+        return list_dfs
+
+    @staticmethod
+    def return_concat(list_dfs):
+
+        major_df = pandas.concat(list_dfs[:-1])
+        summary = list_dfs[-1]
+
+        return major_df, summary
+
