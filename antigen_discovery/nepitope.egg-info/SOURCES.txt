@@ -1,0 +1,13 @@
+setup.py
+nepitope/__init__.py
+nepitope/alignment_tool.py
+nepitope/call_server.py
+nepitope/call_server_cmd_line.py
+nepitope/main.py
+nepitope/score_conservation.py
+nepitope/scoring_utils.py
+nepitope.egg-info/PKG-INFO
+nepitope.egg-info/SOURCES.txt
+nepitope.egg-info/dependency_links.txt
+nepitope.egg-info/not-zip-safe
+nepitope.egg-info/top_level.txt
