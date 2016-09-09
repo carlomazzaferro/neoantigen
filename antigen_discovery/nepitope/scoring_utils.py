@@ -25,8 +25,9 @@ class Score(object):
     def make_windows(self,  out_nmers_path):
         lines = self.create_lists(self.input)
         length = len(lines[1])
+        print length
         for j in self.nmers:
-            for i in range(0, (length / j) + 1):
+            for i in range(0, length - j +1):
                 with open(out_nmers_path + 'nmerized_%i_%i' % (j, i), 'w') as outfile:
                     for line in lines:
                         if '>' in line:
@@ -54,6 +55,33 @@ class Score(object):
                 except:
                     all_list.append(peptide)
         return all_list
+
+    @staticmethod
+    def create_separate_lists(fasta_file):
+
+        with open(fasta_file) as infile:
+            all_list = []
+            peptide = ""
+            lines = infile.readlines()
+            for i in range(0, len(lines)):
+                if lines[i].startswith('>'):
+                    all_list.append(lines[i].rstrip())
+                else:
+                    peptide += lines[i].rstrip()
+                try:
+                    if lines[i + 1].startswith('>'):
+                        all_list.append(peptide)
+                        peptide = ""
+                except:
+                    all_list.append(peptide)
+            j = []
+            k = []
+            for i in all_list:
+                if i.startswith('>'):
+                    j.append(i)
+                else:
+                    k.append(i)
+        return j, k
 
     def run_scoring(self, out_nmers_path):
 
@@ -97,6 +125,20 @@ class Score(object):
             if len_file > 1000:
                 logging.info('File length > 1000. Will have to split file in smaller chunks. Use split_fasta before '
                                 'running netMHCcons prediction.')
+
+    @staticmethod
+    def assign_score_mhc_results(mhc_df, conserv_df):
+        alleles = mhc_df['Allele'].unique()
+        nmers = mhc_df['n-mer'].unique()
+        list_dfs = []
+        for i in alleles:
+            for j in nmers:
+                sliced = mhc_df.loc[(mhc_df['Allele'] == i) & (mhc_df['n-mer'] == j)]
+                score_df = conserv_df.loc[conserv_df['n-mer'] == j]
+                sliced['Score'] = score_df['Score']
+                list_dfs.append(sliced)
+
+        return pandas.concat(list_dfs)
 
     @staticmethod
     def get_length(file_name):
@@ -218,32 +260,79 @@ def split_fasta_file(out_nmers_path, nmer):
 class FileConsolidation(object):
 
     stable_cols = ['Pos', 'Peptide', 'ID']
+    """
 
     def __init__(self, filepath, file_pattern):
-        """
+
 
         :param fasta_input:
         :param nmers:
-        """
+
         self.filepath = filepath
         self.file_pattern = file_pattern
         self.files = glob.glob(self.filepath + self.file_pattern)
         self.allele_list = self.get_allele_list(self.files)
 
-    def load_batch(self):
+    """
 
-        os.chdir(self.filepath)
+    @classmethod
+    def load_full_file(cls, file_name):
+        obj = cls()
+        obj.files = [file_name]
+        obj.allele_list = obj.get_allele_list(obj.files)
+
+        return obj
+
+
+    @classmethod
+    def load_batches(cls, filepath, file_names):
+        obj = cls()
+        obj.filepath = filepath
+        files = []
+        for i in file_names:
+            files.append(filepath + i)
+        obj.files = files
+        alleles = []
+        for i in file_names:
+            alleles.append(os.path.splitext(i)[0].split('_')[-1])
+        obj.allele_list = alleles
+
+        return obj
+
+    @classmethod
+    def load_batch(cls, filepath, file_pattern):
+        obj = cls()
+
+        obj.filepath = filepath
+        obj.file_pattern = file_pattern
+        os.chdir(obj.filepath)
+        obj.files = glob.glob(filepath + file_pattern)
+        obj.allele_list = obj.get_allele_list(obj.files)
+
+        return obj
+
+    def return_df_list(self):
         list_dfs = []
         list_summaries = []
+        if len(self.files) > 1:
+            for files in self.files:
 
-        for files in self.files:
+                df = pandas.read_csv(files, sep='\t', skiprows=1)
+                if 'split' in files.split('/')[-1]:
 
-            df = pandas.read_csv(files, sep='\t', skiprows=1)
-            processed, summary = self.concat_sliced(df)
-            list_dfs.append(processed)
-            list_summaries.append(summary)
+                    processed = self.concat_sliced(df)
+                    list_dfs.append(processed)
 
-        return list_dfs, list_summaries
+                else:
+                    df = df[['Pos', 'Peptide', 'nM', 'Rank', 'ID']]
+                    df["Allele"] = os.path.splitext(files)[0].split('_')[-1]
+                    list_dfs.append(df)
+
+            return list_dfs
+        else:
+            df = pandas.read_csv(self.files[0], sep='\t', skiprows=1)
+            processed = self.concat_sliced(df)
+            return processed
 
     def concat_sliced(self, df):
 
@@ -253,15 +342,19 @@ class FileConsolidation(object):
         for i in sliced_cols:
             list_dfs.append(self.rename_cols(df[i]))
 
-        major, summary = self.return_concat(self.add_allele_name(list_dfs, self.allele_list))
+        major = self.return_concat(self.add_allele_name(list_dfs, self.allele_list))
 
-        return major, summary
+        return major
 
     @staticmethod
-    def concat_batches(list_dfs, list_summaries):
+    def replace_X_with_underscore(df):
+        df['Peptide'] = df['Peptide'].str.replace('X', '-')
+        return df
+
+    @staticmethod
+    def concat_batches(list_dfs):
         conc1 = pandas.concat(list_dfs)
-        conc2 = pandas.concat(list_summaries)
-        return conc1, conc2
+        return conc1
 
     @staticmethod
     def label_affinity(row):
@@ -274,16 +367,20 @@ class FileConsolidation(object):
         if row['nM'] > 5000.0:
             return 'No'
 
-    def aggregate_inf0(self, df1, df2):
-        merged = pandas.merge(df1, df2, on=FileConsolidation.stable_cols)
-        merged['Affinity Level'] = merged.apply(lambda row: self.label_affinity(row), axis=1)
-        return merged
+    def aggregate_info(self, df1):
+
+        df1['Affinity Level'] = df1.apply(lambda row: self.label_affinity(row), axis=1)
+        df1['n-mer'] = df1['Peptide'].str.len()
+
+        return df1
 
     @staticmethod
     def get_allele_list(files):
         unique_alleles = []
-        for filename in files:
-            df1 = pandas.read_csv(filename, sep='\t')
+
+        for i in files:
+
+            df1 = pandas.read_csv(i, sep='\t')
             cols = list(df1.columns)
 
             for item in cols:
@@ -329,7 +426,6 @@ class FileConsolidation(object):
     def return_concat(list_dfs):
 
         major_df = pandas.concat(list_dfs[:-1])
-        summary = list_dfs[-1]
 
-        return major_df, summary
+        return major_df
 
