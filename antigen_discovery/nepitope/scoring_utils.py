@@ -7,6 +7,7 @@ from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 import logging
+from tabulate import tabulate
 
 
 class Score(object):
@@ -139,6 +140,14 @@ class Score(object):
                 list_dfs.append(sliced)
 
         return pandas.concat(list_dfs)
+
+    @staticmethod
+    def add_conserv_score_to_df_list(list_mhc_dfs, conserv_df):
+        agg_list = []
+        for i in list_mhc_dfs:
+            agg_list.append(Score.assign_score_mhc_results(i, conserv_df))
+
+        return agg_list
 
     @staticmethod
     def get_length(file_name):
@@ -280,9 +289,18 @@ class FileConsolidation(object):
         obj = cls()
         obj.files = [file_name]
         obj.allele_list = obj.get_allele_list(obj.files)
+        obj.protein_list = obj.get_prot_list(obj.files)
 
         return obj
 
+    @classmethod
+    def load_full_multiprot_file(cls, file_name):
+        obj = cls()
+        obj.files = [file_name]
+        obj.allele_list = obj.get_allele_list(obj.files)
+        obj.protein_list = obj.get_prot_list(obj.files)
+
+        return obj
 
     @classmethod
     def load_batches(cls, filepath, file_names):
@@ -313,7 +331,6 @@ class FileConsolidation(object):
 
     def return_df_list(self):
         list_dfs = []
-        list_summaries = []
         if len(self.files) > 1:
             for files in self.files:
 
@@ -345,6 +362,15 @@ class FileConsolidation(object):
         major = self.return_concat(self.add_allele_name(list_dfs, self.allele_list))
 
         return major
+
+    def list_df_by_prot(self, df):
+        list_dfs = []
+        for i in self.protein_list:
+            df_of_prot = df.loc[df['ID'] == i]
+            df_of_prot = self.aggregate_info(df_of_prot)
+            list_dfs.append(df_of_prot)
+
+        return list_dfs
 
     @staticmethod
     def replace_X_with_underscore(df):
@@ -390,6 +416,18 @@ class FileConsolidation(object):
         return unique_alleles
 
     @staticmethod
+    def get_prot_list(files):
+        unique_prots = []
+
+        for i in files:
+            df1 = pandas.read_csv(i, sep='\t', skiprows=1)
+            prot_IDs = list(df1['ID'].unique())
+            unique_prots.append(prot_IDs)
+
+        unique_prots = [item for sublist in unique_prots for item in sublist]
+        return unique_prots
+
+    @staticmethod
     def slice_over_df(df):
 
         all_cols = list(df.columns)
@@ -428,4 +466,46 @@ class FileConsolidation(object):
         major_df = pandas.concat(list_dfs[:-1])
 
         return major_df
+
+
+def get_summary_data(list_dfs):
+    for i in list_dfs:
+        prot_name = i.ID.unique()[0]
+        align_title = i["Alignment Title"].unique()[0]
+        align_hits = i["Hits"].unique()[0]
+        prot_len = i.Length.unique()[0]
+        num_high_affinity = i.loc[i["Affinity Level"] == 'High']
+        num_med_affinity = i.loc[i["Affinity Level"] == 'Intermediate']
+        num_low_affinity = i.loc[i["Affinity Level"] == 'Low']
+        num_no_affinity = i.loc[i["Affinity Level"] == 'No']
+        HA_per_AA = float(i['Length'].unique()[0]) / (len(num_high_affinity))
+
+        lists_to_print = [["Accession Number", prot_name],
+                          ["Alignment Title", align_title],
+                          ["Protein length", prot_len],
+                          ["Alignment Hits", align_hits],
+                          ["High affinity peptides", len(num_high_affinity)],
+                          ["Medium affinity peptides", len(num_med_affinity)],
+                          ["Low affinity peptides", len(num_low_affinity)],
+                          ["No affinity peptides", len(num_no_affinity)],
+                          ["High affinity per amino acid", HA_per_AA]]
+
+        print tabulate(lists_to_print)
+
+
+def add_blast_extra_data(list_dfs, extra_data_file):
+
+    list_ = open(extra_data_file, 'r').readlines()
+    list_ = [list_[i:i + 4] for i in xrange(0, len(list_), 4)]
+    df_extra_data = pandas.DataFrame(list_, columns=['ID', 'Alignment Title', 'Length', 'Hits'])
+    df_extra_data['Identity Percentage'] = df_extra_data.apply(lambda row: (float(row['Hits'])/float(row['length'])))
+
+    list_2 = []
+    for i in list_dfs:
+        list_2.append(pandas.merge(i, df_extra_data, on='ID'))
+
+
+
+    return list_2
+
 

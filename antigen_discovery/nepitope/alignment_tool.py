@@ -1,6 +1,7 @@
 import urllib2
 from Bio.Blast import NCBIXML
-
+import errno
+import os
 
 filepath = '/Users/carlomazzaferro/Desktop/BINF_rand_files/CAS9_stuff/test.fasta'
 ID = 'Q99ZW2'
@@ -64,10 +65,35 @@ def viz_blast(xml_filepath):
                     print('PERCENTAGE: {}'.format(float(hsp.identities)/alignment.length))
 
 
-def write_blast_filtered_output(xml_in_filepath, fasta_out, treshold):
+def viz_blast_2(xml_filepath):
+    result_handle = open(xml_filepath)
+    blast_records = NCBIXML.parse(result_handle)
+    i = 0
+    for record in blast_records:
+        for dat in record.descriptions:
+
+            print dat.title + '\n'
+            i += 1
+            print i
+            """
+            for alignment in record.alignments:
+                for hsp in alignment.hsps:
+                    if hsp.expect < 0.1:
+                        print('****Alignment****')
+                        print('sequence:', record.posted_date)
+                        print('length:', alignment.length)
+                        print(hsp.query[0:75] + '...')
+                        print(hsp.match[0:75] + '...')
+                        print(hsp.sbjct[0:75] + '...')
+                        print('identities: {}'.format(hsp.identities))
+                        print('PERCENTAGE: {}'.format(float(hsp.identities)/alignment.length))
+            """
+
+
+def write_blast_filtered_output(xml_in_filepath, fasta_out, treshold, extra_data_file):
     result_handle = open(xml_in_filepath)
     blast_records = NCBIXML.parse(result_handle)
-    with open(fasta_out, 'w') as outfile:
+    with open(fasta_out, 'w') as outfile, open(extra_data_file, 'w') as outfile_2:
         for record in blast_records:
             for alignment in record.alignments:
                 for hsp in alignment.hsps:
@@ -75,6 +101,10 @@ def write_blast_filtered_output(xml_in_filepath, fasta_out, treshold):
                     if PERCENTAGE > treshold:
                         outfile.write('>' + alignment.accession + '\n')
                         outfile.write(hsp.sbjct + '\n')
+                        outfile_2.write('>' + alignment.accession + '\n')
+                        outfile_2.write(alignment.title + '\n')
+                        outfile_2.write(str(alignment.length) + '\n')
+                        outfile_2.write(str(hsp.identities) + '\n')
 
 
 def create_lists(fasta_file):
@@ -86,13 +116,42 @@ def create_lists(fasta_file):
             if line.startswith('>'):
                 all_list.append(line.rstrip())
             else:
-                peptide = peptide + line.rstrip()
+                peptide += line.rstrip()
             if next(infile).startswith('>'):
                 all_list.append(peptide)
                 peptide = ""
 
     return all_list
 
+
+def create_single_fasta(fasta_file, dir_name):
+    with open(fasta_file) as infile:
+        all_list = []
+        peptide = ""
+        for line in infile:
+
+            if line.startswith('>'):
+                all_list.append(line.rstrip())
+            else:
+                peptide += line.rstrip()
+                all_list.append(peptide)
+                peptide = ""
+
+    mkdir_p(os.path.dirname(fasta_file) + '/' + dir_name)
+    for i in xrange(len(all_list)):
+        with open('fasta_out_single_prot_%i.fasta' %i, 'w') as fasta:
+            fasta.write(all_list[i] + '/n')
+            fasta.write(all_list[i+1])
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 def make_windows(fasta_file, out_fasta_path, nmers=None):
     lines = create_lists(fasta_file)
