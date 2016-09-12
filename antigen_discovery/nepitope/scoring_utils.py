@@ -24,6 +24,11 @@ class Score(object):
         self.nmers = nmers
 
     def make_windows(self,  out_nmers_path):
+        """
+        deprecated method
+        :param out_nmers_path:
+        :return:
+        """
         lines = self.create_lists(self.input)
         length = len(lines[1])
         print length
@@ -93,6 +98,7 @@ class Score(object):
         list_dfs = []
         for i in range(0, len(self.nmers)):
             for files in glob.glob(out_nmers_path + "processed_nmerized_%i*" % self.nmers[i]):
+
                 list_dfs.append(self.get_dfs(files))
 
         scores = self.calculate_avg(list_dfs)
@@ -191,6 +197,11 @@ class Score(object):
 
         with open(out_nmers_path + "processed_" + files.split('/')[-1] + ".txt", "wb") as out, open(out_nmers_path + "stderr.txt", "wb") as err:
             subprocess.Popen(args, stdout=out, stderr=err)
+
+        with open(out_nmers_path + "stderr.txt") as error_file:
+            lines = error_file.readlines()
+            if lines:
+                print "Errors occured. Check %s for details" % (out_nmers_path + "stderr.txt")
 
     @staticmethod
     def get_dfs(files):
