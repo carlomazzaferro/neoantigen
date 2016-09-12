@@ -1,4 +1,4 @@
-# /Users/carlomazzaferro/Documents/CCBB/antigen_discovery/tests/test_scoring.fasta -- js_divergence - window_size: 3 - background: blosum62 - seq. weighting: True - gap penalty: 1 - normalized: False
+# /Users/carlomazzaferro/Documents/Code/neoantigen/antigen_discovery/tests/test_scoring.fasta -- js_divergence - window_size: 3 - background: blosum62 - seq. weighting: True - gap penalty: 1 - normalized: False
 # align_column_number	score	column
 
 0	0.86281	MMMMMMM-M--MMM-MMMMM-MMM-MMMMMMMMMMMMMMMMMMMMMMMMMM----MMMMMMMMMMMMMMM--MMMM-MMMM-------

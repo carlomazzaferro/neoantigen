@@ -2,11 +2,14 @@ import unittest
 import os
 import sys
 import pandas
+import glob
 
 sys.path.append("/Users/carlomazzaferro/Documents/CCBB/antigen_discovery/")
 
 from nepitope import scoring_utils
 from nepitope.scoring_utils import Score
+
+
 
 file_name = os.path.dirname(os.path.realpath('__file__')) + '/tests/test_scoring.fasta'
 print file_name
@@ -39,9 +42,6 @@ class TestScoringUtils(unittest.TestCase):
     def test_scoring_utils(self):
         self.assertTrue(self, os.path.exists(os.getcwd()+'/score_conservation.py'))
 
-    def test_scoring_utils(self):
-        self.assertTrue(self, os.path.exists(os.getcwd() + '/score_conservation.py'))
-
     def test_conservation_scipt(self):
         curr_dir = os.path.dirname(os.path.realpath('__file__')) + '/tests/'
         scoring.create_score_file(file_name, curr_dir)
@@ -60,6 +60,38 @@ class TestScoringUtils(unittest.TestCase):
 
         self.assertEqual(list(df_.columns), self.df_cols)
         self.assertEqual(summary, self.score_pep_val)
+
+    def test_run_scoring(self):
+        curr_dir = os.path.dirname(os.path.realpath('__file__')) + '/tests/'
+        nmers = [8,9,10,11]
+
+        list_dfs = []
+        for i in nmers:
+            for files in glob.glob(curr_dir + "/processed_nmerized_%i*" % i):
+                list_dfs.append(scoring_utils.Score.get_dfs(files))
+        self.assertEqual(len(list_dfs), len(glob.glob(curr_dir + "/processed_nmerized_*")))
+
+
+
+    def test_create_list_from_fasta(self):
+        file_name = self.data
+        num_lines = sum(1 for line in open(file_name))
+        lines_list = scoring_utils.Score.create_lists(file_name)
+        lines = [line.rstrip('\n') for line in open(file_name)]
+
+        self.assertEqual(lines[0], lines_list[0])
+        self.assertEqual(num_lines, len(lines_list))
+
+    def test_create_lists_from_fasta(self):
+
+        file_name = self.data
+        num_lines = sum(1 for line in open(file_name))
+        line_list_1, line_list_2 = scoring_utils.Score.create_separate_lists(file_name)
+        self.assertEqual(num_lines, len(line_list_1) + len(line_list_2))
+
+
+
+
 
 
 
