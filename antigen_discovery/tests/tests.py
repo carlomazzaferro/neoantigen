@@ -71,8 +71,6 @@ class TestScoringUtils(unittest.TestCase):
                 list_dfs.append(scoring_utils.Score.get_dfs(files))
         self.assertEqual(len(list_dfs), len(glob.glob(curr_dir + "/processed_nmerized_*")))
 
-
-
     def test_create_list_from_fasta(self):
         file_name = self.data
         num_lines = sum(1 for line in open(file_name))
