@@ -11,14 +11,21 @@ from tabulate import tabulate
 
 
 class Score(object):
+    """
+    Class that implements score calculations along an MSA for every n-mer specified. The algorithm
+    is based on the Jensen-Shannon divergence, and can be found in the file socre_conservation.py.
+    This class is aimed at created the necessary inputs for the calculation over every window of an
+    alignment. Must be initialized with the fasta file containing the alignment as well as a list of
+    n-mers to be used for the scoring.
+    """
 
     score_script_path = "python " + os.path.dirname(os.path.realpath('__file__')) + "/score_conservation.py "
 
     def __init__(self, fasta_input, nmers):
         """
 
-        :param fasta_input:
-        :param nmers:
+        :param fasta_input:fasta input containing MSA
+        :param nmers: list of n-mers over which scorng will be calculatared
         """
         self.input = fasta_input
         self.nmers = nmers
@@ -26,8 +33,8 @@ class Score(object):
     def make_windows(self,  out_nmers_path):
         """
         deprecated method
-        :param out_nmers_path:
-        :return:
+        :param out_nmers_path: file to the windowized n-mer files
+        :return: creates files over which score conservation will be calculated
         """
         lines = self.create_lists(self.input)
         length = len(lines[1])
@@ -44,6 +51,11 @@ class Score(object):
 
     @staticmethod
     def create_lists(fasta_file):
+        """
+        Create list from a fasta file
+        :param fasta_file: file
+        :return: list with every row as entry in a list
+        """
 
         with open(fasta_file) as infile:
             all_list = []
@@ -64,7 +76,11 @@ class Score(object):
 
     @staticmethod
     def create_separate_lists(fasta_file):
-
+        """
+        Creates 2 lists from a fasta file
+        :param fasta_file: file
+        :return: one list for the IDs in the file and one list for the proteins/peptides in it
+        """
         with open(fasta_file) as infile:
             all_list = []
             peptide = ""
@@ -106,6 +122,11 @@ class Score(object):
         return scores
 
     def create_large_fasta(self, out_nmers_path):
+        """
+        Joins files containing windowized n-mers
+        :param out_nmers_path: filepath to windows
+        :return: large fasta file containing all the files in the path that have pepties of the same length
+        """
 
         logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s %(message)s',
@@ -123,10 +144,12 @@ class Score(object):
         consolidated = glob.glob(out_nmers_path + "/consolidated*")
 
         for i in range(0, len(consolidated)):
+
             df = Score.return_df(consolidated[i])
             filtered_name = out_nmers_path + 'filtered_' + consolidated[i].split('/')[-1]
             Score.dataframe_to_fasta(df, outfile=filtered_name)
             len_file = Score.get_length(filtered_name)
+
             print 'File filtered_consolidated_fasta_%i.fasta written to %s' % (self.nmers[i], out_nmers_path)
 
             if len_file > 1000:
@@ -135,11 +158,20 @@ class Score(object):
 
     @staticmethod
     def assign_score_mhc_results(mhc_df, conserv_df):
+        """
+        Method to ensure the data is being assigned in the correct locations
+        :param mhc_df:
+        :param conserv_df:
+        :return:
+        """
         alleles = mhc_df['Allele'].unique()
         nmers = mhc_df['n-mer'].unique()
+
         list_dfs = []
+
         for i in alleles:
             for j in nmers:
+
                 sliced = mhc_df.loc[(mhc_df['Allele'] == i) & (mhc_df['n-mer'] == j)]
                 score_df = conserv_df.loc[conserv_df['n-mer'] == j]
                 sliced['Score'] = score_df['Score']
@@ -149,6 +181,14 @@ class Score(object):
 
     @staticmethod
     def add_conserv_score_to_df_list(list_mhc_dfs, conserv_df):
+        """
+        Method for joining conservation score and binding affinity.
+
+        1-log50k  -	 nM  -	Rank   -  Pos   -   Peptide  -  ID  -  Allele  -  Affinity  -  Level  -  n-mer  -  Score
+        :param list_mhc_dfs: list of dataframes containing data regarding mhc binding affinity for each protein
+        :param conserv_df: list of dataframes containing data regarding conservation scores for each protein
+        :return: concatenated dataframes in a list
+        """
         agg_list = []
         for i in list_mhc_dfs:
             agg_list.append(Score.assign_score_mhc_results(i, conserv_df))
@@ -157,11 +197,21 @@ class Score(object):
 
     @staticmethod
     def get_length(file_name):
+        """
+        Get number of lines in a file
+        :param file_name: file name
+        :return: number of lines
+        """
         num_lines = sum(1 for line in open(file_name))
         return num_lines
 
     @staticmethod
     def return_df(fasta_file):
+        """
+        Returns dataframe from fasta file without duplicates
+        :param fasta_file: file
+        :return: df
+        """
         recs = SeqIO.parse(fasta_file, 'fasta')
         keys = ['locus_tag', 'translation', 'description']
         data = [(r.name, str(r.seq), str(r.description)) for r in recs]
@@ -278,25 +328,23 @@ def split_fasta_file(out_nmers_path, nmer):
 
 
 class FileConsolidation(object):
-
-    stable_cols = ['Pos', 'Peptide', 'ID']
     """
-
-    def __init__(self, filepath, file_pattern):
-
-
-        :param fasta_input:
-        :param nmers:
-
-        self.filepath = filepath
-        self.file_pattern = file_pattern
-        self.files = glob.glob(self.filepath + self.file_pattern)
-        self.allele_list = self.get_allele_list(self.files)
-
+    Class to ease up the analysis of multiple files/proteins. It will take as inputs a file containing the results
+    from netMHCcons and will provide methods to output the data in nicely formatted pandas dataframes that contain
+    a variety of accessory information regarding the proteins in question.
+    3 different constructors provided, each one well suited for a specific input.
     """
+    stable_cols = ['Pos', 'Peptide', 'ID']  #Columns that are always present
+
 
     @classmethod
     def load_full_file(cls, file_name):
+        """
+        For the situation in which a file containing all possible predictions (combinations of alleles and nmers)
+        for a single protein.
+        :param file_name: ex: file output from netMHCcons for 1 protein
+        :return:class with attributes: protein list (should be a list with 1 object), allele list
+        """
         obj = cls()
         obj.files = [file_name]
         obj.allele_list = obj.get_allele_list(obj.files)
@@ -306,6 +354,12 @@ class FileConsolidation(object):
 
     @classmethod
     def load_full_multiprot_file(cls, file_name):
+        """
+        For the situation in which a file containing all possible predictions (combinations of alleles and nmers)
+        for multiple proteins.
+        :param file_name: file output from netMHCcons for more than 1 protein
+        :return:  protein list, allele list
+        """
         obj = cls()
         obj.files = [file_name]
         obj.allele_list = obj.get_allele_list(obj.files)
@@ -315,6 +369,14 @@ class FileConsolidation(object):
 
     @classmethod
     def load_batches(cls, filepath, file_names):
+        """
+        When netMHC or any other prediction method is run locally, then it might be the case that you'll have multiple
+        files, each containing prediction for different alleles/n-mers. This method takes care of loading them all
+        and consolidating them for later processing.
+        :param filepath: path to files
+        :param file_names: ame of files
+        :return:
+        """
         obj = cls()
         obj.filepath = filepath
         files = []
@@ -330,6 +392,13 @@ class FileConsolidation(object):
 
     @classmethod
     def load_batch(cls, filepath, file_pattern):
+        """
+        Same as above but it will load all files give a name pattern, for instance:
+        load_batch('/data/predictions', 'netMHC_QQZWC_protein_')
+        :param filepath:
+        :param file_pattern:
+        :return:
+        """
         obj = cls()
 
         obj.filepath = filepath
@@ -341,6 +410,10 @@ class FileConsolidation(object):
         return obj
 
     def return_df_list(self):
+        """
+        Returning a list of dataframes from class.files attribute
+        :return:
+        """
         list_dfs = []
         if len(self.files) > 1:
             for files in self.files:
@@ -363,6 +436,13 @@ class FileConsolidation(object):
             return processed
 
     def concat_sliced(self, df):
+        """
+        Concatenate dataframes in list after slicing them: a netMHC prediction comes in wide format, having 3 columns
+        for each allele. Here we slice them and concatenate them in order to get a pandas dataframe in long format
+
+        :param df: wide dataframe from netMHC
+        :return: long dataframe
+        """
 
         sliced_cols = self.slice_over_df(df)
         list_dfs = []
@@ -375,6 +455,12 @@ class FileConsolidation(object):
         return major
 
     def list_df_by_prot(self, df):
+
+        """
+        Slice long dataframe per protein and place them in a list
+        :param df: long dataframe
+        :return: list of dataframes
+        """
         list_dfs = []
         for i in self.protein_list:
             df_of_prot = df.loc[df['ID'] == i]
@@ -385,16 +471,31 @@ class FileConsolidation(object):
 
     @staticmethod
     def replace_X_with_underscore(df):
+        """
+        Necessary for proper netMHC processing.
+        :param df: df
+        :return: df
+        """
         df['Peptide'] = df['Peptide'].str.replace('X', '-')
         return df
 
     @staticmethod
     def concat_batches(list_dfs):
+        """
+        Concat pandas in a list
+        :param list_dfs: list of dfs
+        :return: concat'd df
+        """
         conc1 = pandas.concat(list_dfs)
         return conc1
 
     @staticmethod
     def label_affinity(row):
+        """
+        Function ot be applied to a dataframe to introduce a column with a label for the binding affinity
+        :param row: row of df
+        :return: binding affinity level
+        """
         if row['nM'] < 50.0:
             return 'High'
         if 50.0 < row['nM'] < 500.0:
@@ -405,6 +506,11 @@ class FileConsolidation(object):
             return 'No'
 
     def aggregate_info(self, df1):
+        """
+        Add extra data to dataframe: affinity level label, and n-mer
+        :param df1: df
+        :return: df with extra data
+        """
 
         df1['Affinity Level'] = df1.apply(lambda row: self.label_affinity(row), axis=1)
         df1['n-mer'] = df1['Peptide'].str.len()
@@ -413,6 +519,11 @@ class FileConsolidation(object):
 
     @staticmethod
     def get_allele_list(files):
+        """
+        Retrieve alleles from netMHC file
+        :param files: netMHC predictions
+        :return: list of alleles
+        """
         unique_alleles = []
 
         for i in files:
@@ -428,6 +539,11 @@ class FileConsolidation(object):
 
     @staticmethod
     def get_prot_list(files):
+        """
+        Retrieve list of proteins from netMHC file
+        :param files: netMHC predictions
+        :return: list of proteins
+        """
         unique_prots = []
 
         for i in files:
@@ -465,6 +581,12 @@ class FileConsolidation(object):
 
     @staticmethod
     def add_allele_name(list_dfs, allele_list):
+        """
+        Add allele as a column to dataframes in a list of dataframes
+        :param list_dfs: list of dfs
+        :param allele_list: allele list retrieved from netMHC predictions
+        :return: list of dataframes
+        """
 
         for i in range(0, len(list_dfs[:-1])):
             list_dfs[i]['Allele'] = allele_list[i]
@@ -480,6 +602,11 @@ class FileConsolidation(object):
 
 
 def get_summary_data(list_dfs):
+    """
+    Pretty print summary data about each protein
+    :param list_dfs: list of dataframes containing info about each protein
+    :return: prints to output a nicely formatted tables
+    """
     for i in list_dfs:
         prot_name = i.ID.unique()[0]
         align_title = i["Alignment Title"].unique()[0]
@@ -505,7 +632,12 @@ def get_summary_data(list_dfs):
 
 
 def add_blast_extra_data(list_dfs, extra_data_file):
-
+    """
+    Retrieve data from a blast alignment xml file and place it into a dataframe
+    :param list_dfs: list of dataframes
+    :param extra_data_file: blast alignment file
+    :return: list of dataframes with extra data
+    """
     list_ = open(extra_data_file, 'r').readlines()
     list_ = [list_[i:i + 4] for i in xrange(0, len(list_), 4)]
     df_extra_data = pandas.DataFrame(list_, columns=['ID', 'Alignment Title', 'Length', 'Hits'])
@@ -514,8 +646,6 @@ def add_blast_extra_data(list_dfs, extra_data_file):
     list_2 = []
     for i in list_dfs:
         list_2.append(pandas.merge(i, df_extra_data, on='ID'))
-
-
 
     return list_2
 
