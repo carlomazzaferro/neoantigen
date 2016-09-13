@@ -171,13 +171,17 @@ class Score(object):
 
         for i in alleles:
             for j in nmers:
-
                 sliced = mhc_df.loc[(mhc_df['Allele'] == i) & (mhc_df['n-mer'] == j)]
                 score_df = conserv_df.loc[conserv_df['n-mer'] == j]
-                sliced['Score'] = score_df['Score']
+                sliced['Score'] = pandas.Series(list(score_df['Score']), index=sliced.index)
                 list_dfs.append(sliced)
 
-        return pandas.concat(list_dfs)
+        resulting_df = pandas.concat(list_dfs)
+        resulting_df = resulting_df.loc[resulting_df['Score'] > 0]
+        resulting_df = resulting_df.loc[resulting_df['Peptide'].str.contains('X') == False]
+
+        return resulting_df
+
 
     @staticmethod
     def add_conserv_score_to_df_list(list_mhc_dfs, conserv_df):
@@ -412,7 +416,7 @@ class FileConsolidation(object):
     def return_df_list(self):
         """
         Returning a list of dataframes from class.files attribute
-        :return:
+        :return: a dataframe if only one file is provided, or a list of dataframes if multiple files are provided
         """
         list_dfs = []
         if len(self.files) > 1:
@@ -632,21 +636,201 @@ def get_summary_data(list_dfs):
 
 
 def add_blast_extra_data(list_dfs, extra_data_file):
-    """
-    Retrieve data from a blast alignment xml file and place it into a dataframe
-    :param list_dfs: list of dataframes
-    :param extra_data_file: blast alignment file
-    :return: list of dataframes with extra data
-    """
     list_ = open(extra_data_file, 'r').readlines()
     list_ = [list_[i:i + 4] for i in xrange(0, len(list_), 4)]
-    df_extra_data = pandas.DataFrame(list_, columns=['ID', 'Alignment Title', 'Length', 'Hits'])
-    df_extra_data['Identity Percentage'] = df_extra_data.apply(lambda row: (float(row['Hits'])/float(row['length'])))
+
+    df_extra_data = create_df_from_list_(list_)
 
     list_2 = []
     for i in list_dfs:
         list_2.append(pandas.merge(i, df_extra_data, on='ID'))
-
     return list_2
 
 
+def f(x):
+    return int(x[0]) / float(x[1])
+
+
+def create_df_from_list_(list_):
+    df = pandas.DataFrame(list_, columns=['ID', 'Alignment Title', 'Length', 'Hits'])
+    for column in df:
+        df[column] = df[column].str.strip()
+    df['ID'] = df['ID'].str[1:]
+    df['Identity Percentage'] = df[['Hits', 'Length']].apply(f, axis=1)
+
+    return df
+
+
+class SummaryData(object):
+    @classmethod
+    def summarize_all_data(cls, list_container, show_names=False):
+        obj = cls()
+        obj.container = list_container
+        obj.proteins = obj.get_proteins(obj.container)
+        obj.titles = obj.get_title()
+        obj.num_prots = len(obj.proteins)
+        obj.list_high_affinity_peps = obj.get_list_affinity(level='high')
+        obj.list_med_affinity_peps = obj.get_list_affinity(level='med')
+        obj.list_low_affinity_peps = obj.get_list_affinity(level='low')
+        obj.list_no_affinity_peps = obj.get_list_affinity(level='no')
+        obj.lengths = obj.get_list_lengths()
+        obj.hits = obj.get_list_hits()
+        obj.list_high_affinity_per_aa = obj.get_list_high_affinity_per_aa()
+
+        if show_names:
+            obj.display = obj.display_proteins()
+
+        obj.data_list = [obj.proteins, obj.titles, obj.list_high_affinity_per_aa,
+                         obj.list_high_affinity_peps, obj.list_med_affinity_peps,
+                         obj.list_low_affinity_peps, obj.list_no_affinity_peps,
+                         obj.lengths, obj.hits]
+
+        obj.indexes = ['Accession ID', 'Title', 'High Affinity Peptides Per AA',
+                       'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
+                       'Num No Affinity Peps', 'Protein Length', 'Alignment Hits']
+
+        return obj
+
+    @classmethod
+    def summarize_protein_data(cls, list_container, protein_of_interest):
+        """
+        For the situation in which a file containing all possible predictions (combinations of alleles and nmers)
+        for a single protein.
+        :param file_name: ex: file output from netMHCcons for 1 protein
+        :return:class with attributes: protein list (should be a list with 1 object), allele list
+        """
+        obj = cls()
+        obj.container = list_container
+        obj.proteins = obj.get_proteins(obj.container)
+        obj.my_protein = protein_of_interest
+        obj.my_df = obj.get_df_from_prot()
+        obj.title = obj.my_df["Alignment Title"].unique()[0]
+        obj.high_affinity_peps = obj.get_num_high_affinity(obj.my_df)
+        obj.med_affinity_peps = obj.get_num_med_affinity(obj.my_df)
+        obj.low_affinity_peps = obj.get_num_low_affinity(obj.my_df)
+        obj.no_affinity_peps = obj.get_num_no_affinity(obj.my_df)
+        obj.high_affinity_per_aa = obj.get_high_affinity_per_aa(obj.my_df)
+        obj.length = obj.get_length(obj.my_df)
+        obj.single_hits = obj.get_hits(obj.my_df)
+
+        return obj
+
+    def return_dataframe(self, num_display=20, rank_by='High Affinity Peptides Per AA'):
+
+        df = pandas.DataFrame(self.data_list, index=self.indexes)
+        df = df.T
+        summary = df.sort_values(by=rank_by).head(num_display)
+
+        return summary
+
+    def get_df_from_prot(self):
+        df = pandas.DataFrame()
+        for i in self.container:
+            if i["ID"].unique()[0] == self.my_protein:
+                df = i
+
+        if df.empty:
+            return "Protein not found"
+
+        else:
+            return df
+
+    def get_list_affinity(self, level=None):
+        list_affinities = []
+
+        if level == 'high':
+            for i in self.container:
+                list_affinities.append(self.get_num_high_affinity(i))
+
+        if level == 'med':
+            for i in self.container:
+                list_affinities.append(self.get_num_med_affinity(i))
+
+        if level == 'low':
+            for i in self.container:
+                list_affinities.append(self.get_num_low_affinity(i))
+
+        if level == 'no':
+            for i in self.container:
+                list_affinities.append(self.get_num_no_affinity(i))
+
+        return list_affinities
+
+    def get_high_affinity_per_aa(self, df):
+        return float(df['Length'].unique()[0]) / (len(self.high_affinity_peps))
+
+    def get_list_high_affinity_per_aa(self):
+        my_list = []
+        for i in range(0, len(self.container)):
+            my_list.append(float(self.container[i]['Length'].unique()[0]) / self.list_high_affinity_peps[i])
+        return my_list
+
+    def get_list_lengths(self):
+
+        lengths = []
+        for i in self.container:
+            lengths.append(self.get_length(i))
+        return lengths
+
+    def get_list_hits(self):
+
+        hits_list = []
+        for i in self.container:
+            hits_list.append(self.get_hits(i))
+        return hits_list
+
+    @staticmethod
+    def get_hits(df):
+        return df.Hits.unique()[0]
+
+    @staticmethod
+    def get_length(df):
+        return df.Length.unique()[0]
+
+    @staticmethod
+    def get_num_high_affinity(df):
+        return len(df.loc[df["Affinity Level"] == 'High'])
+
+    @staticmethod
+    def get_num_med_affinity(df):
+        return len(df.loc[df["Affinity Level"] == 'Intermediate'])
+
+    @staticmethod
+    def get_num_low_affinity(df):
+        return len(df.loc[df["Affinity Level"] == 'Low'])
+
+    @staticmethod
+    def get_num_no_affinity(df):
+        return len(df.loc[df["Affinity Level"] == 'No'])
+
+    def print_table(self):
+        print '.'
+
+    @staticmethod
+    def get_proteins(list_dfs):
+        """
+        Retrieve list of proteins from df list
+        :param list_dfs: df list
+        :return: list of proteins
+        """
+        unique_prots = []
+
+        for i in list_dfs:
+            prot_IDs = i['ID'].unique()
+            unique_prots.append(prot_IDs)
+
+        unique_prots = [item for sublist in unique_prots for item in sublist]
+        return unique_prots
+
+    def get_title(self):
+
+        titles = []
+        for i in self.container:
+            titles.append(i["Alignment Title"].unique()[0])
+
+        return titles
+
+    def display_proteins(self):
+        for i in range(0, len(self.proteins)):
+            print "Protein Accession Number: %s" % self.proteins[i]
+            print "Associated Alignment Title: %s \n" % self.titles[i]
