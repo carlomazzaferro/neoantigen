@@ -1,22 +1,26 @@
 import pandas
+from nepitope import scoring_utils
 
 
 def join_files(files):
     list_dfs = []
+
     for i in files:
         df = load_to_df(i)
         if len(df) != 89:
-            print 'Wrong Length'
+            print('Wrong Length')
         list_dfs.append(df)
     return list_dfs
 
 
 def load_to_df(file_):
+
     with open(file_) as inf:
         names = []
         nums = []
         proteins = []
         name_numbered = []
+
         for line in inf:
             line = line.split()
             proteins.append(line[-1])
@@ -64,4 +68,37 @@ def concat_dfs(list_dfs):
 
     return base_df
 
-#def load_x
+
+def load_motifs_and_conservation_locs(file_):
+
+    with open(file_) as inf:
+        data_motifs = []
+        data_inf_pos = []
+
+        for line in inf:
+            if line.startswith('Motifs'):
+                line = line.split()
+                data_motifs.append(line[-1])
+            else:
+                line = line.split()
+                data_inf_pos.append(line[-1])
+
+    joined_motifs = "".join(data_motifs)
+    joined_inf_pos = "".join(data_inf_pos)
+
+    return joined_motifs, joined_inf_pos
+
+
+def dealign_and_add_reference_protein(original_fasta, new_fasta, ref_prot, ref_prot_name):
+
+    names, proteins = scoring_utils.Score.create_separate_lists(original_fasta)
+
+    with open(new_fasta, 'w') as fasta:
+        for i in range(0, len(names)):
+            fasta.write('>' + names[i] + '\n')
+            fasta.write(proteins[i].replace('-', "") + '\n')
+
+        fasta.write(ref_prot_name + '\n')
+        fasta.write(ref_prot)
+
+
