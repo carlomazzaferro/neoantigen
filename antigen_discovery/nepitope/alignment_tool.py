@@ -1,4 +1,7 @@
-import urllib2
+from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.error import URLError
+
 from Bio.Blast import NCBIXML
 import errno
 import os
@@ -28,20 +31,20 @@ def fetch_protein(filepath, website=None, ID=None, fetch_fasta=False):
 
 def handle_request(url):
     try:
-        urllib2.urlopen(url)
-    except urllib2.HTTPError, e:
+        urlopen(url)
+    except HTTPError as e:
         print(e.code)
-    except urllib2.URLError, e:
+    except URLError as e:
         print(e.args)
 
     # if no errors, proceed:
-    response = urllib2.urlopen(url)
+    response = urlopen(url)
     html = response.read()
     return html
 
 
 def write_file(html_input, filepath):
-    if isinstance(html_input, basestring):
+    if isinstance(html_input, str):
         with open(filepath, 'w') as outfile:
             outfile.write(html_input)
     else:
@@ -72,9 +75,9 @@ def viz_blast_2(xml_filepath):
     for record in blast_records:
         for dat in record.descriptions:
 
-            print dat.title + '\n'
+            print (dat.title + '\n')
             i += 1
-            print i
+            print (i)
             """
             for alignment in record.alignments:
                 for hsp in alignment.hsps:
@@ -138,7 +141,7 @@ def create_single_fasta(fasta_file, dir_name):
                 peptide = ""
 
     mkdir_p(os.path.dirname(fasta_file) + '/' + dir_name)
-    for i in xrange(len(all_list)):
+    for i in range(len(all_list)):
         with open('fasta_out_single_prot_%i.fasta' %i, 'w') as fasta:
             fasta.write(all_list[i] + '/n')
             fasta.write(all_list[i+1])
