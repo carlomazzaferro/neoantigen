@@ -908,12 +908,56 @@ class Alignment(object):
             else:
                 out.write('-')
 
+    def write_affinity_scores(self, scores_df, out, all_alleles=True, list_alleles=None):
+
+        nmers = self._get_nmers_from_affinity_df(scores_df)
+        alls = self._check_return_alleles(scores_df, all_alleles, list_alleles)
+
+        for i in nmers:
+            for k in alls:
+
+                to_print = self._slice_df(scores_df)
+                peps = self._get_peptides(to_print)
+
+                for j in range(0, len(peps)):
+
+                    if '-' in peps[j]:
+                        continue
+
+                    if not self._get_affinity_per_peptide(peps[j], to_print):
+                        continue
+                    else:
+                        self._write_out(i, k, j, out, peps)
+
     @staticmethod
-    def write_affinity_scores(scores_df, out, all_alleles=True, list_alleles=None):
+    def _write_out(i, j, k, out, peps):
+        out.write('\n>High_Affinity_Loc|n-mer=%i|allele=%s\n' % (i, k))
+        out.write('-' * j)
+        out.write(peps[j])
+        out.write('-' * (len(peps) - j - 1))
 
-        nmers = list(scores_df['n-mer'].unique())
+    @staticmethod
+    def _get_affinity_per_peptide(pep, df):
+        aff_per_pep = df.loc[df['Peptide'] == pep]
+        if len(aff_per_pep) > 1:
+            return False
 
-        scores_df['Peptide'] = scores_df['Peptide'].str.replace('X', '-')
+        if list(aff_per_pep['Affinity Level'].values)[0] == 'High':
+            return True
+
+    @staticmethod
+    def _slice_df(nmer, allele, df):
+
+        to_print = df.loc[(df['n-mer'] == nmer) & (df['Allele'] == allele)]
+        to_print['Peptide'] = to_print['Peptide'].str.replace('X', '-')
+        return to_print
+
+    @staticmethod
+    def _get_peptides(df):
+        return list(df['Peptide'].values)
+
+    @staticmethod
+    def _check_return_alleles(scores_df, all_alleles, list_alleles):
 
         if all_alleles:
             alls = list(scores_df.Allele.unique())
@@ -923,23 +967,10 @@ class Alignment(object):
         if (all_alleles is False) & (list_alleles is None):
             raise ValueError('No allele provided')
 
-        for i in nmers:
-            for k in alls:
+        return alls
 
-                to_print = scores_df.loc[(scores_df['n-mer'] == i) & (scores_df['Allele'] == k)]
-                peps = list(to_print['Peptide'].values)
+    @staticmethod
+    def _get_nmers_from_affinity_df(scores_df):
+        return list(scores_df['n-mer'].unique())
 
-                for j in range(0, len(peps)):
 
-                    if '-' in peps[j]:
-                        continue
-
-                    lvl = to_print.loc[to_print['Peptide'] == peps[j]]
-                    if len(lvl) > 1:
-                        continue
-
-                    if list(lvl['Affinity Level'].values)[0] == 'High':
-                        out.write('\n>High_Affinity_Loc|n-mer=%i|allele=%s\n' % (i, k))
-                        out.write('-' * j)
-                        out.write(peps[j])
-                        out.write('-' * (len(peps) - j - 1))
