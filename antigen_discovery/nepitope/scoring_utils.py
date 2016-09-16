@@ -911,30 +911,31 @@ class Alignment(object):
     def write_affinity_scores(self, scores_df, out, all_alleles=True, list_alleles=None):
 
         nmers = self._get_nmers_from_affinity_df(scores_df)
-        alls = self._check_return_alleles(scores_df, all_alleles, list_alleles)
+        alleles = self._check_return_alleles(scores_df, all_alleles, list_alleles)
 
-        for i in nmers:
-            for k in alls:
+        for nmer in nmers:
+            for allele in alleles:
 
-                to_print = self._slice_df(scores_df)
+                to_print = self._slice_df(nmer, allele, scores_df)
                 peps = self._get_peptides(to_print)
 
-                for j in range(0, len(peps)):
+                for idx in range(0, len(peps)):
 
-                    if '-' in peps[j]:
+                    if '-' in peps[idx]:
                         continue
 
-                    if not self._get_affinity_per_peptide(peps[j], to_print):
+                    if not self._get_affinity_per_peptide(peps[idx], to_print):
                         continue
                     else:
-                        self._write_out(i, k, j, out, peps)
+                        self._write_out(nmer, allele, idx, out, peps)
 
     @staticmethod
-    def _write_out(i, j, k, out, peps):
-        out.write('\n>High_Affinity_Loc|n-mer=%i|allele=%s\n' % (i, k))
-        out.write('-' * j)
-        out.write(peps[j])
-        out.write('-' * (len(peps) - j - 1))
+    def _write_out(nmer, allele, idx, out, peps):
+
+        out.write('\n>High_Affinity_Loc|n-mer=%i|allele=%s\n' % (nmer, allele))
+        out.write('-' * idx)
+        out.write(peps[idx])
+        out.write('-' * (len(peps) - idx - 1))
 
     @staticmethod
     def _get_affinity_per_peptide(pep, df):
