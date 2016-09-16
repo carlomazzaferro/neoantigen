@@ -3,14 +3,17 @@ import shlex
 import subprocess
 import pandas
 import glob
+import numpy as np
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 import logging
 from tabulate import tabulate
+from skbio import TabularMSA, Protein
 
 
 class Score(object):
+
     """
     Class that implements score calculations along an MSA for every n-mer specified. The algorithm
     is based on the Jensen-Shannon divergence, and can be found in the file socre_conservation.py.
@@ -38,7 +41,7 @@ class Score(object):
         """
         lines = self.create_lists(self.input)
         length = len(lines[1])
-        print length
+        print (length)
         for j in self.nmers:
             for i in range(0, length - j +1):
                 with open(out_nmers_path + 'nmerized_%i_%i' % (j, i), 'w') as outfile:
@@ -150,7 +153,7 @@ class Score(object):
             Score.dataframe_to_fasta(df, outfile=filtered_name)
             len_file = Score.get_length(filtered_name)
 
-            print 'File filtered_consolidated_fasta_%i.fasta written to %s' % (self.nmers[i], out_nmers_path)
+            print ('File filtered_consolidated_fasta_%i.fasta written to %s' % (self.nmers[i], out_nmers_path))
 
             if len_file > 1000:
                 logging.info('File length > 1000. Will have to split file in smaller chunks. Use split_fasta before '
@@ -173,7 +176,7 @@ class Score(object):
             for j in nmers:
                 sliced = mhc_df.loc[(mhc_df['Allele'] == i) & (mhc_df['n-mer'] == j)]
                 score_df = conserv_df.loc[conserv_df['n-mer'] == j]
-                sliced['Score'] = pandas.Series(list(score_df['Score']), index=sliced.index)
+                sliced['Score'] = pandas.Series(list(score_df['Score']))
                 list_dfs.append(sliced)
 
         resulting_df = pandas.concat(list_dfs)
@@ -255,7 +258,7 @@ class Score(object):
         with open(out_nmers_path + "stderr.txt") as error_file:
             lines = error_file.readlines()
             if lines:
-                print "Errors occured. Check %s for details" % (out_nmers_path + "stderr.txt")
+                print ("Errors occured. Check %s for details" % (out_nmers_path + "stderr.txt"))
 
     @staticmethod
     def get_dfs(files):
@@ -328,7 +331,7 @@ def split_fasta_file(out_nmers_path, nmer):
                 for item in list_slice:
                     outfile.write("%s\n" % item)
 
-            print 'File %s written to %s' % (new_file_names.split('/')[-1], out_nmers_path)
+            print ('File %s written to %s' % (new_file_names.split('/')[-1], out_nmers_path))
 
 
 class FileConsolidation(object):
@@ -564,7 +567,7 @@ class FileConsolidation(object):
         all_cols = list(df.columns)
         list_cols = []
 
-        for i in xrange(3, len(all_cols), 3):
+        for i in range(3, len(all_cols), 3):
 
             sliced = all_cols[i:(i + 3)]
             sliced.extend(FileConsolidation.stable_cols)
@@ -632,12 +635,12 @@ def get_summary_data(list_dfs):
                           ["No affinity peptides", len(num_no_affinity)],
                           ["High affinity per amino acid", HA_per_AA]]
 
-        print tabulate(lists_to_print)
+        print (tabulate(lists_to_print))
 
 
 def add_blast_extra_data(list_dfs, extra_data_file):
     list_ = open(extra_data_file, 'r').readlines()
-    list_ = [list_[i:i + 4] for i in xrange(0, len(list_), 4)]
+    list_ = [list_[i:i + 4] for i in range(0, len(list_), 4)]
 
     df_extra_data = create_df_from_list_(list_)
 
@@ -804,7 +807,7 @@ class SummaryData(object):
         return len(df.loc[df["Affinity Level"] == 'No'])
 
     def print_table(self):
-        print '.'
+        print ('.')
 
     @staticmethod
     def get_proteins(list_dfs):
@@ -832,5 +835,111 @@ class SummaryData(object):
 
     def display_proteins(self):
         for i in range(0, len(self.proteins)):
-            print "Protein Accession Number: %s" % self.proteins[i]
-            print "Associated Alignment Title: %s \n" % self.titles[i]
+            print("Protein Accession Number: %s" % self.proteins[i])
+            print("Associated Alignment Title: %s \n" % self.titles[i])
+
+
+class Alignment(object):
+
+    def __init__(self, msa_file, ref_protein_file):
+        self.msa_file = msa_file
+        self.msa = self.read_msa_file(msa_file)
+        self.positional_conservation = self.get_positional_conservation()
+        self.reference_protein = ref_protein_file
+        self.reference_protein_string = self.open_fasta_return_single_seq()
+
+    @staticmethod
+    def read_msa_file(msa_file):
+
+        msa = TabularMSA.read(msa_file, constructor=Protein)
+        msa.reassign_index(minter='id')
+        return msa
+
+    def get_positional_conservation(self):
+
+        positional_conservation = self.msa.conservation(metric='inverse_shannon_uncertainty',
+                                                        degenerate_mode='nan', gap_mode='include')
+        return np.nan_to_num(positional_conservation)
+
+    def create_score_df_from_scikit_bio(self, nmers):
+
+        ls_df = []
+
+        for i in nmers:
+            scores = []
+            peptides = []
+
+            for j in range(0, len(self.reference_protein_string) - i):
+                scores.append(np.mean(self.positional_conservation[j:j + i]))
+                peptides.append(self.reference_protein_string[j:j + i])
+
+            df = pandas.DataFrame([scores, peptides], index=['Score', 'Peptide'])
+            df = df.T
+            df['n-mer'] = i
+            ls_df.append(df)
+
+        return pandas.concat(ls_df)
+
+    def open_fasta_return_single_seq(self):
+
+        with open(self.reference_protein) as inf:
+
+            prot = []
+            next(inf)
+            for line in inf:
+                prot.append(line)
+
+            return prot[0]
+
+    def additional_data_writing(self, msa_out, scores_df, all_alleles=True, list_alleles=None):
+
+        with open(self.msa_file) as inf, open(msa_out, 'w') as out:
+            self.write_conservation_scores(inf, out)
+            self.write_affinity_scores(scores_df, out, all_alleles=all_alleles, list_alleles=list_alleles)
+
+    def write_conservation_scores(self, inf, out):
+        for line in inf:
+            line = line.replace('X', '-')
+            out.write(line)
+        out.write('>CONSERVATION_INFO\n')
+        for i in self.positional_conservation:
+            if i > 0.1:
+                out.write('O')
+            else:
+                out.write('-')
+
+    @staticmethod
+    def write_affinity_scores(scores_df, out, all_alleles=True, list_alleles=None):
+
+        nmers = list(scores_df['n-mer'].unique())
+
+        scores_df['Peptide'] = scores_df['Peptide'].str.replace('X', '-')
+
+        if all_alleles:
+            alls = list(scores_df.Allele.unique())
+        else:
+            alls = list_alleles
+
+        if (all_alleles is False) & (list_alleles is None):
+            raise ValueError('No allele provided')
+
+        for i in nmers:
+            for k in alls:
+
+                to_print = scores_df.loc[(scores_df['n-mer'] == i) & (scores_df['Allele'] == k)]
+                peps = list(to_print['Peptide'].values)
+
+                for j in range(0, len(peps)):
+
+                    if '-' in peps[j]:
+                        continue
+
+                    lvl = to_print.loc[to_print['Peptide'] == peps[j]]
+                    if len(lvl) > 1:
+                        continue
+
+                    if list(lvl['Affinity Level'].values)[0] == 'High':
+                        out.write('\n>High_Affinity_Loc|n-mer=%i|allele=%s\n' % (i, k))
+                        out.write('-' * j)
+                        out.write(peps[j])
+                        out.write('-' * (len(peps) - j - 1))
