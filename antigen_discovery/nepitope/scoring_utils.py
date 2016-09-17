@@ -161,23 +161,20 @@ class Score(object):
 
     @staticmethod
     def assign_score_mhc_results(mhc_df, conserv_df):
-        """
-        Method to ensure the data is being assigned in the correct locations
-        :param mhc_df:
-        :param conserv_df:
-        :return:
-        """
-        alleles = mhc_df['Allele'].unique()
-        nmers = mhc_df['n-mer'].unique()
+
+        alleles = list(mhc_df['Allele'].unique())
+        nmers = list(mhc_df['n-mer'].unique())
 
         list_dfs = []
 
-        for i in alleles:
-            for j in nmers:
-                sliced = mhc_df.loc[(mhc_df['Allele'] == i) & (mhc_df['n-mer'] == j)]
-                score_df = conserv_df.loc[conserv_df['n-mer'] == j]
-                sliced['Score'] = pandas.Series(list(score_df['Score']))
-                list_dfs.append(sliced)
+        for allele in alleles:
+            for nmer in nmers:
+
+                sliced = Score._get_df_allele_nmer(mhc_df, allele, nmer)
+                score_df = Score._get_nmer_score_df(conserv_df, nmer)
+                list_scores = Score._get_score_list(score_df)
+                final_df = Score._add_list_as_column(sliced, list_scores)
+                list_dfs.append(final_df)
 
         resulting_df = pandas.concat(list_dfs)
         resulting_df = resulting_df.loc[resulting_df['Score'] > 0]
@@ -185,17 +182,29 @@ class Score(object):
 
         return resulting_df
 
+    @staticmethod
+    def _get_score_list(df):
+        return list(df['Score'].values)
+
+    @staticmethod
+    def _add_list_as_column(df_1, list_1):
+        if len(list_1) < len(df_1):
+            list_2 = [0] * (len(df_1) - len(list_1))
+            list_1 = list_1 + list_2
+        df_1['Score'] = list_1
+        return df_1
+
+    @staticmethod
+    def _get_df_allele_nmer(df, allele, nmer):
+        return df.loc[(df['Allele'] == allele) & (df['n-mer'] == nmer)]
+
+    @staticmethod
+    def _get_nmer_score_df(df, nmer):
+        return df.loc[df['n-mer'] == nmer]
 
     @staticmethod
     def add_conserv_score_to_df_list(list_mhc_dfs, conserv_df):
-        """
-        Method for joining conservation score and binding affinity.
 
-        1-log50k  -	 nM  -	Rank   -  Pos   -   Peptide  -  ID  -  Allele  -  Affinity  -  Level  -  n-mer  -  Score
-        :param list_mhc_dfs: list of dataframes containing data regarding mhc binding affinity for each protein
-        :param conserv_df: list of dataframes containing data regarding conservation scores for each protein
-        :return: concatenated dataframes in a list
-        """
         agg_list = []
         for i in list_mhc_dfs:
             agg_list.append(Score.assign_score_mhc_results(i, conserv_df))
@@ -663,182 +672,6 @@ def create_df_from_list_(list_):
 
     return df
 
-
-class SummaryData(object):
-    @classmethod
-    def summarize_all_data(cls, list_container, show_names=False):
-        obj = cls()
-        obj.container = list_container
-        obj.proteins = obj.get_proteins(obj.container)
-        obj.titles = obj.get_title()
-        obj.num_prots = len(obj.proteins)
-        obj.list_high_affinity_peps = obj.get_list_affinity(level='high')
-        obj.list_med_affinity_peps = obj.get_list_affinity(level='med')
-        obj.list_low_affinity_peps = obj.get_list_affinity(level='low')
-        obj.list_no_affinity_peps = obj.get_list_affinity(level='no')
-        obj.lengths = obj.get_list_lengths()
-        obj.hits = obj.get_list_hits()
-        obj.list_high_affinity_per_aa = obj.get_list_high_affinity_per_aa()
-
-        if show_names:
-            obj.display = obj.display_proteins()
-
-        obj.data_list = [obj.proteins, obj.titles, obj.list_high_affinity_per_aa,
-                         obj.list_high_affinity_peps, obj.list_med_affinity_peps,
-                         obj.list_low_affinity_peps, obj.list_no_affinity_peps,
-                         obj.lengths, obj.hits]
-
-        obj.indexes = ['Accession ID', 'Title', 'High Affinity Peptides Per AA',
-                       'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
-                       'Num No Affinity Peps', 'Protein Length', 'Alignment Hits']
-
-        return obj
-
-    @classmethod
-    def summarize_protein_data(cls, list_container, protein_of_interest):
-        """
-        For the situation in which a file containing all possible predictions (combinations of alleles and nmers)
-        for a single protein.
-        :param file_name: ex: file output from netMHCcons for 1 protein
-        :return:class with attributes: protein list (should be a list with 1 object), allele list
-        """
-        obj = cls()
-        obj.container = list_container
-        obj.proteins = obj.get_proteins(obj.container)
-        obj.my_protein = protein_of_interest
-        obj.my_df = obj.get_df_from_prot()
-        obj.title = obj.my_df["Alignment Title"].unique()[0]
-        obj.high_affinity_peps = obj.get_num_high_affinity(obj.my_df)
-        obj.med_affinity_peps = obj.get_num_med_affinity(obj.my_df)
-        obj.low_affinity_peps = obj.get_num_low_affinity(obj.my_df)
-        obj.no_affinity_peps = obj.get_num_no_affinity(obj.my_df)
-        obj.high_affinity_per_aa = obj.get_high_affinity_per_aa(obj.my_df)
-        obj.length = obj.get_length(obj.my_df)
-        obj.single_hits = obj.get_hits(obj.my_df)
-
-        return obj
-
-    def return_dataframe(self, num_display=20, rank_by='High Affinity Peptides Per AA'):
-
-        df = pandas.DataFrame(self.data_list, index=self.indexes)
-        df = df.T
-        summary = df.sort_values(by=rank_by).head(num_display)
-
-        return summary
-
-    def get_df_from_prot(self):
-        df = pandas.DataFrame()
-        for i in self.container:
-            if i["ID"].unique()[0] == self.my_protein:
-                df = i
-
-        if df.empty:
-            return "Protein not found"
-
-        else:
-            return df
-
-    def get_list_affinity(self, level=None):
-        list_affinities = []
-
-        if level == 'high':
-            for i in self.container:
-                list_affinities.append(self.get_num_high_affinity(i))
-
-        if level == 'med':
-            for i in self.container:
-                list_affinities.append(self.get_num_med_affinity(i))
-
-        if level == 'low':
-            for i in self.container:
-                list_affinities.append(self.get_num_low_affinity(i))
-
-        if level == 'no':
-            for i in self.container:
-                list_affinities.append(self.get_num_no_affinity(i))
-
-        return list_affinities
-
-    def get_high_affinity_per_aa(self, df):
-        return float(df['Length'].unique()[0]) / (len(self.high_affinity_peps))
-
-    def get_list_high_affinity_per_aa(self):
-        my_list = []
-        for i in range(0, len(self.container)):
-            my_list.append(float(self.container[i]['Length'].unique()[0]) / self.list_high_affinity_peps[i])
-        return my_list
-
-    def get_list_lengths(self):
-
-        lengths = []
-        for i in self.container:
-            lengths.append(self.get_length(i))
-        return lengths
-
-    def get_list_hits(self):
-
-        hits_list = []
-        for i in self.container:
-            hits_list.append(self.get_hits(i))
-        return hits_list
-
-    @staticmethod
-    def get_hits(df):
-        return df.Hits.unique()[0]
-
-    @staticmethod
-    def get_length(df):
-        return df.Length.unique()[0]
-
-    @staticmethod
-    def get_num_high_affinity(df):
-        return len(df.loc[df["Affinity Level"] == 'High'])
-
-    @staticmethod
-    def get_num_med_affinity(df):
-        return len(df.loc[df["Affinity Level"] == 'Intermediate'])
-
-    @staticmethod
-    def get_num_low_affinity(df):
-        return len(df.loc[df["Affinity Level"] == 'Low'])
-
-    @staticmethod
-    def get_num_no_affinity(df):
-        return len(df.loc[df["Affinity Level"] == 'No'])
-
-    def print_table(self):
-        print ('.')
-
-    @staticmethod
-    def get_proteins(list_dfs):
-        """
-        Retrieve list of proteins from df list
-        :param list_dfs: df list
-        :return: list of proteins
-        """
-        unique_prots = []
-
-        for i in list_dfs:
-            prot_IDs = i['ID'].unique()
-            unique_prots.append(prot_IDs)
-
-        unique_prots = [item for sublist in unique_prots for item in sublist]
-        return unique_prots
-
-    def get_title(self):
-
-        titles = []
-        for i in self.container:
-            titles.append(i["Alignment Title"].unique()[0])
-
-        return titles
-
-    def display_proteins(self):
-        for i in range(0, len(self.proteins)):
-            print("Protein Accession Number: %s" % self.proteins[i])
-            print("Associated Alignment Title: %s \n" % self.titles[i])
-
-
 class Alignment(object):
 
     def __init__(self, msa_file, ref_protein_file):
@@ -921,13 +754,19 @@ class Alignment(object):
 
                 for idx in range(0, len(peps)):
 
-                    if '-' in peps[idx]:
+                    if idx > 3250:
+                        continue
+
+                    if '--' in peps[idx]:
                         continue
 
                     if not self._get_affinity_per_peptide(peps[idx], to_print):
                         continue
                     else:
                         self._write_out(nmer, allele, idx, out, peps)
+
+
+
 
     @staticmethod
     def _write_out(nmer, allele, idx, out, peps):
