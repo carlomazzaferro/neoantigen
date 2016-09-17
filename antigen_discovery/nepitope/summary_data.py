@@ -1,9 +1,8 @@
 import pandas
-import seaborn as sns
+from tabulate import tabulate
 import matplotlib.pyplot as plt
-import seaborn as sns;
+import seaborn as sns
 import numpy
-
 
 sns.set(style='ticks')
 
@@ -15,10 +14,24 @@ class SummaryData(object):
         obj.container = list_container
         obj.proteins = obj.get_proteins(obj.container)
         obj.my_df = obj.get_df_no_prot_input()
+        obj.alleles = obj.get_alleles()
         obj.high_affinity_peps = obj.get_num_high_affinity(obj.my_df)
         obj.med_affinity_peps = obj.get_num_med_affinity(obj.my_df)
         obj.low_affinity_peps = obj.get_num_low_affinity(obj.my_df)
         obj.no_affinity_peps = obj.get_num_no_affinity(obj.my_df)
+        obj.high_cons_score = obj.get_high_cons_score_peps()
+        obj.num_high_cons_peps = len(obj.high_cons_score)
+        obj.high_affinity_and_conserved = obj.get_high_affinity_and_conserved()
+        obj.num_high_affinity_and_conserved = len(obj.high_affinity_and_conserved)
+        obj.low_cons_score = obj.get_low_cons_score_peps()
+        obj.high_affinity_and_not_conserved = obj.get_low_affinity_and_not_conserved()
+        obj.num_high_affinity_and_not_conserved = len(obj.high_affinity_and_not_conserved)
+
+        obj.table = [['Accession ID', obj.proteins[0]], ['Num High Affinity Peps', obj.high_affinity_peps],
+                     ['Num Med Affinity Peps', obj.med_affinity_peps], ['Num Low Affinity Peps', obj.low_affinity_peps],
+                     ['Num No Affinity Peps', obj.no_affinity_peps], ['Num High Affinity and Conserved',
+                                                                      obj.num_high_affinity_and_conserved],
+                     ['Num High Affinity Not Conserved', obj.num_high_affinity_and_not_conserved, 'AFSFSFD']]
 
         return obj
 
@@ -144,6 +157,23 @@ class SummaryData(object):
             hits_list.append(self.get_hits(i))
         return hits_list
 
+    def get_high_cons_score_peps(self):
+        high_scores = self.my_df.loc[self.my_df['Score'] > 0.3]
+        return high_scores
+
+    def get_low_cons_score_peps(self):
+        low_scores = self.my_df.loc[self.my_df['Score'] < 0.3]
+        return low_scores
+
+    def get_high_affinity_and_conserved(self):
+        return self.high_cons_score.loc[self.high_cons_score['Affinity Level'] == 'High']
+
+    def get_low_affinity_and_not_conserved(self):
+        return self.low_cons_score.loc[self.low_cons_score['Affinity Level'] == 'High']
+
+    def get_alleles(self):
+        return list(self.my_df['Allele'].unique())
+
     @staticmethod
     def get_hits(df):
         return df.Hits.unique()[0]
@@ -168,9 +198,6 @@ class SummaryData(object):
     def get_num_no_affinity(df):
         return len(df.loc[df["Affinity Level"] == 'No'])
 
-    def print_table(self):
-        print('.')
-
     @staticmethod
     def get_proteins(list_dfs):
         """
@@ -187,6 +214,9 @@ class SummaryData(object):
         unique_prots = [item for sublist in unique_prots for item in sublist]
         return unique_prots
 
+    def print_table(self):
+        print(tabulate(self.table))
+
     def get_title(self):
 
         titles = []
@@ -200,23 +230,21 @@ class SummaryData(object):
             print("Protein Accession Number: %s" % self.proteins[i])
             print("Associated Alignment Title: %s \n" % self.titles[i])
 
-    def plot_affinity_versus_conservation_score(self, nmer=9):
-        out_df = self.my_df.loc[self.my_df['n-mer'] == nmer]
+    def plot_affinity_versus_conservation_score(self):  # , nmer=9):
+        out_df = self.my_df
         out_df = out_df.reset_index(drop=True)
         out_df['Indx'] = out_df.index
         print(out_df['n-mer'].unique())
         numpy.random.seed(0)
 
-        _Affinity = ['No', 'Low', 'Intermediate', 'High']
-
-        col = sns.color_palette("hls", n_colors=4)
+        _Affinity = ['High', 'Low', 'Intermediate']
+        col = sns.color_palette("hls", n_colors=3)
         sns.set(font_scale=1.8)
         fg = sns.FacetGrid(data=out_df, palette=col, hue='Affinity Level',
                            hue_order=_Affinity, aspect=1.4, size=15)
 
-        # fg.set(xlim=(-5, 2005))
-        fg.map(plt.scatter, 'Indx', 'Score', s=80, linewidth=0.1, edgecolor="white").set_axis_labels("Window",
-                                                                                                     "Consevation")
+        fg.map(plt.scatter, 'Indx', 'Score', s=250, linewidth=0.1, edgecolor="white").set_axis_labels("Window",
+                                                                                                      "Consevation")
         fg.map(plt.axhline, y=out_df['Score'].mean(), xmin=0, xmax=1,
                color='b', alpha=0.5, ls='dotted', lw=1.3,
                label='Mean Conservation Score').set_axis_labels("Peptide Window", "Consevation").add_legend()
