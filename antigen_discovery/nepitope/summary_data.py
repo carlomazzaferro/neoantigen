@@ -60,7 +60,7 @@ class SummaryData(object):
 
         obj.indexes = ['Accession ID', 'Title', 'High Affinity Peptides Per AA',
                        'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
-                       'Num No Affinity Peps', 'Protein Length', 'Alignment Hits']
+                       'Num No Affinity Peps (Not Shown In Plot)', 'Protein Length', 'Alignment Hits']
 
         return obj
 
@@ -76,7 +76,7 @@ class SummaryData(object):
         obj.container = list_container
         obj.proteins = obj.get_proteins(obj.container)
         obj.my_protein = protein_of_interest
-        obj.my_df = obj.get_
+        obj.my_df = obj.get_df_from_prot()
         obj.title = obj.my_df["Alignment Title"].unique()[0]
         obj.high_affinity_peps = obj.get_num_high_affinity(obj.my_df)
         obj.med_affinity_peps = obj.get_num_med_affinity(obj.my_df)
@@ -99,7 +99,10 @@ class SummaryData(object):
             return df.sort_values(by=rank_by)
 
     def get_df_no_prot_input(self):
-        return self.container[0]
+        filtered = self.container[0].loc[(self.container[0]['Score'] > 0) &
+                                         (self.container[0]['Peptide'].str.contains('--') == False)]
+        return filtered
+
 
     def get_df_from_prot(self):
         df = pandas.DataFrame()
@@ -233,8 +236,9 @@ class SummaryData(object):
     def plot_affinity_versus_conservation_score(self):  # , nmer=9):
         out_df = self.my_df
         out_df = out_df.reset_index(drop=True)
+        out_df = out_df.loc[out_df['Peptide'].str.contains('--') == False]
         out_df['Indx'] = out_df.index
-        print(out_df['n-mer'].unique())
+        #print(out_df['n-mer'].unique())
         numpy.random.seed(0)
 
         _Affinity = ['High', 'Low', 'Intermediate']

@@ -177,8 +177,8 @@ class Score(object):
                 list_dfs.append(final_df)
 
         resulting_df = pandas.concat(list_dfs)
-        resulting_df = resulting_df.loc[resulting_df['Score'] > 0]
-        resulting_df = resulting_df.loc[resulting_df['Peptide'].str.contains('X') == False]
+        #resulting_df = resulting_df.loc[resulting_df['Score'] > 0]
+        resulting_df['Peptide'] = resulting_df['Peptide'].str.replace('X', '-')
 
         return resulting_df
 
@@ -672,19 +672,19 @@ def create_df_from_list_(list_):
 
     return df
 
+
 class Alignment(object):
 
     def __init__(self, msa_file, ref_protein_file):
         self.msa_file = msa_file
-        self.msa = self.read_msa_file(msa_file)
+        self.msa = self.read_msa_file()
         self.positional_conservation = self.get_positional_conservation()
         self.reference_protein = ref_protein_file
         self.reference_protein_string = self.open_fasta_return_single_seq()
 
-    @staticmethod
-    def read_msa_file(msa_file):
+    def read_msa_file(self):
 
-        msa = TabularMSA.read(msa_file, constructor=Protein)
+        msa = TabularMSA.read(self.msa_file, constructor=Protein)
         msa.reassign_index(minter='id')
         return msa
 
@@ -724,32 +724,51 @@ class Alignment(object):
 
             return prot[0]
 
-    def additional_data_writing(self, msa_out, scores_df, all_alleles=True, list_alleles=None):
 
-        with open(self.msa_file) as inf, open(msa_out, 'w') as out:
+class AddData (object):
+
+    def __init__(self, msa_file_input, msa_file_output, scores_df, positional_conservation,
+                 all_alleles=True, list_alleles=None, pos_cons_treshold=None):
+
+        if pos_cons_treshold is None:
+            self.pos_cons_treshold = 0.1
+        else:
+            self.pos_cons_treshold = pos_cons_treshold
+        self.msa_file_input = msa_file_input
+        self.msa_file_output = msa_file_output
+        self.scores_df = scores_df
+        self.all_alleles = all_alleles
+        self.list_alleles = list_alleles
+        self.positional_conservation = positional_conservation
+        self.alleles = self._check_return_alleles(self.scores_df, self.all_alleles, self.list_alleles)
+        self.nmers = self._get_nmers_from_affinity_df(self.scores_df)
+        self.high_aa_low_cons_df = self._high_aff_low_cons_to_df(self.return_high_affinity_and_not_conserved())
+
+    def open_files(self):
+
+        with open(self.msa_file_input) as inf, open(self.msa_file_output, 'w') as out:
             self.write_conservation_scores(inf, out)
-            self.write_affinity_scores(scores_df, out, all_alleles=all_alleles, list_alleles=list_alleles)
+            self.write_affinity_scores(out)
 
     def write_conservation_scores(self, inf, out):
+
         for line in inf:
             line = line.replace('X', '-')
             out.write(line)
         out.write('>CONSERVATION_INFO\n')
+
         for i in self.positional_conservation:
-            if i > 0.1:
+            if i > self.pos_cons_treshold:
                 out.write('O')
             else:
                 out.write('-')
 
-    def write_affinity_scores(self, scores_df, out, all_alleles=True, list_alleles=None):
+    def write_affinity_scores(self, out):
 
-        nmers = self._get_nmers_from_affinity_df(scores_df)
-        alleles = self._check_return_alleles(scores_df, all_alleles, list_alleles)
+        for nmer in self.nmers:
+            for allele in self.alleles:
 
-        for nmer in nmers:
-            for allele in alleles:
-
-                to_print = self._slice_df(nmer, allele, scores_df)
+                to_print = self._slice_df(nmer, allele, self.scores_df)
                 peps = self._get_peptides(to_print)
 
                 for idx in range(0, len(peps)):
@@ -765,8 +784,41 @@ class Alignment(object):
                     else:
                         self._write_out(nmer, allele, idx, out, peps)
 
+    def high_affinity_low_cons_df(self):
+        selected_df = self.scores_df.loc[(self.scores_df['Affinity Level'] == 'High') & (self.scores_df['Score'] < 0.1)]
+        selected_df = selected_df.loc[(selected_df['Pos'] < 3250) & (selected_df['Peptide'].str.contains('--') == False)]
+        return selected_df
 
+    def return_high_affinity_and_not_conserved(self):
 
+        high_aff_not_cons = []
+
+        for nmer in self.nmers:
+            for allele in self.alleles:
+
+                to_print = self._slice_df(nmer, allele, self.scores_df)
+                peps = self._get_peptides(to_print)
+
+                for idx in range(0, len(peps)):
+
+                    mean_cons = self._get_mean_pos_cons_per_pep(nmer, idx)
+                    if self._get_affinity_per_peptide(peps[idx], to_print):
+                        if mean_cons < self.pos_cons_treshold:
+                            print (mean_cons)
+                            high_aff_not_cons.append([idx, peps[idx]])
+
+        return high_aff_not_cons
+
+    @staticmethod
+    def _high_aff_low_cons_to_df(list_of_lists):
+        return pandas.DataFrame(list_of_lists, columns=['Peptide Position', 'Peptide'])
+
+    def _get_mean_pos_cons_per_pep(self, nmer, index):
+
+        initial_aminoa_acid = index*nmer
+        endind_amino_acid = (index+1)*nmer
+
+        return np.mean(self.positional_conservation[initial_aminoa_acid:endind_amino_acid])
 
     @staticmethod
     def _write_out(nmer, allele, idx, out, peps):
@@ -784,6 +836,8 @@ class Alignment(object):
 
         if list(aff_per_pep['Affinity Level'].values)[0] == 'High':
             return True
+        else:
+            return False
 
     @staticmethod
     def _slice_df(nmer, allele, df):
@@ -812,5 +866,3 @@ class Alignment(object):
     @staticmethod
     def _get_nmers_from_affinity_df(scores_df):
         return list(scores_df['n-mer'].unique())
-
-
