@@ -432,7 +432,7 @@ class FileConsolidation(object):
         """
         list_dfs = []
         if len(self.files) > 1:
-            for files in self.files:
+            for idx, files in enumerate(self.files):
 
                 df = pandas.read_csv(files, sep='\t', skiprows=1)
                 if 'split' in files.split('/')[-1]:
@@ -442,7 +442,8 @@ class FileConsolidation(object):
 
                 else:
                     df = df[['Pos', 'Peptide', 'nM', 'Rank', 'ID']]
-                    df["Allele"] = os.path.splitext(files)[0].split('_')[-1]
+                    df["Allele"] = self.allele_list[idx]
+                    df = self.aggregate_info(df)
                     list_dfs.append(df)
 
             return list_dfs
