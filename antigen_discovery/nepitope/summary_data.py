@@ -8,6 +8,26 @@ sns.set(style='ticks')
 
 
 class SummaryData(object):
+
+    @classmethod
+    def summarize_data_for_each_mhc_pred(cls, list_container, original_peptides_data, results_of_interest):
+        obj = cls()
+        obj.original_data = original_peptides_data
+        obj.results_of_interest = results_of_interest
+        obj.container = list_container
+        obj.nmer_list = obj.get_nmer_list()
+        obj.alleles = obj.get_allele_list()
+        obj.list_high_affinity_peps = obj.get_list_num_high_affinity()
+        obj.med_affinity_peps = obj.get_list_num_med_affinity()
+        obj.low_affinity_peps = obj.get_list_num_low_affinity()
+        obj.no_affinity_peps = obj.get_list_num_no_affinity()
+        obj.original_peps = [pep[0] for pep in original_peptides_data]
+        obj.original_pos = [int(pep[1]) for pep in original_peptides_data]
+        obj.top_20_percent_peptides_per_prediction = obj.get_top_scoring_peptides()
+        obj.summary_df = obj.return_df_from_lol()
+
+        return obj
+
     @classmethod
     def summarize_without_blast_dat(cls, list_container):
         obj = cls()
@@ -39,7 +59,6 @@ class SummaryData(object):
     def summarize_all_data(cls, list_container, show_names=False):
         obj = cls()
         obj.container = list_container
-        obj.proteins = obj.get_proteins(obj.container)
         obj.titles = obj.get_title()
         obj.num_prots = len(obj.proteins)
         obj.list_high_affinity_peps = obj.get_list_affinity(level='high')
@@ -88,6 +107,77 @@ class SummaryData(object):
 
         return obj
 
+#--------#---FUNCTIONS USED WITH 1ST CLASSMETHOD SOLELY---#--------#--------#--------
+
+    def write_peptides_to_fasta(self, fasta_dir):
+        peps = self.summary_df['top scoring peptides'].values.tolist()
+        other_data = self.summary_df[['original peptide', 'allele', 'nmer', 'original pos']].values.tolist()
+        with open(fasta_dir, 'w') as out:
+            for i in range(len(peps)):
+                for pep in peps[i]:
+                    out.write(
+                        ">Peptide:" + other_data[i][0] + '_' + other_data[i][1] + '_' + str(
+                            other_data[i][-1]) + '\n')
+                    out.write(pep + '\n')
+
+    def return_df_from_lol(self):
+        headers = ['nmer', 'allele', 'num high affinity peps', 'num med affinity peps', 'num low affinity peps',
+                   'num no affinity peps', 'original peptide', 'original pos', 'top scoring peptides']
+
+        deep_list = [self.nmer_list, self.alleles, self.list_high_affinity_peps, self.med_affinity_peps,
+                     self.low_affinity_peps, self.no_affinity_peps, self.original_peps, self.original_pos,
+                     self.top_20_percent_peptides_per_prediction]
+
+        return pandas.DataFrame(deep_list, index=headers).T
+
+    def get_top_scoring_peptides(self):
+
+        peptides_in_list = []
+        for i in self.container:
+            high_scoring = i.sort_values(by='nM', ascending=False).head(int(len(i) * 0.2))
+            high_scoring['Peptide'] = high_scoring['Peptide'].str.replace('X', '-')
+            peptides_in_list.append(high_scoring['Peptide'].values.tolist())
+
+        return peptides_in_list
+
+    def get_allele_list(self):
+        allele_list = []
+        for i in self.container:
+            allele_list.append(i['Allele'].unique()[0])
+        return allele_list
+
+    def get_nmer_list(self):
+        nmer_list = []
+        for i in self.container:
+            nmer_list.append(i['n-mer'].unique()[0])
+        return nmer_list
+
+    def get_list_num_high_affinity(self):
+        high_aff = []
+        for i in self.container:
+            high_aff.append(len(i.loc[i['Affinity Level'] == 'High']))
+        return high_aff
+
+    def get_list_num_med_affinity(self):
+        med_aff = []
+        for i in self.container:
+            med_aff.append(len(i.loc[i['Affinity Level'] == 'Intermediate']))
+        return med_aff
+
+    def get_list_num_low_affinity(self):
+        low_aff = []
+        for i in self.container:
+            low_aff.append(len(i.loc[i['Affinity Level'] == 'Low']))
+        return low_aff
+
+    def get_list_num_no_affinity(self):
+        no_aff = []
+        for i in self.container:
+            no_aff.append(len(i.loc[i['Affinity Level'] == 'No']))
+        return no_aff
+
+# --------#--------#--------#--------#--------#--------#--------#--------#--------#--------#--------#
+
     def return_dataframe(self, num_display=None, rank_by='High Affinity Peptides Per AA'):
 
         df = pandas.DataFrame(self.data_list, index=self.indexes)
@@ -102,7 +192,6 @@ class SummaryData(object):
         filtered = self.container[0].loc[(self.container[0]['Score'] > 0) &
                                          (self.container[0]['Peptide'].str.contains('--') == False)]
         return filtered
-
 
     def get_df_from_prot(self):
         df = pandas.DataFrame()
@@ -238,7 +327,7 @@ class SummaryData(object):
         out_df = out_df.reset_index(drop=True)
         out_df = out_df.loc[out_df['Peptide'].str.contains('--') == False]
         out_df['Indx'] = out_df.index
-        #print(out_df['n-mer'].unique())
+        # print(out_df['n-mer'].unique())
         numpy.random.seed(0)
 
         _Affinity = ['High', 'Low', 'Intermediate']
