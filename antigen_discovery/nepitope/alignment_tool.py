@@ -44,10 +44,13 @@ def handle_request(url):
 
 
 def write_file(html_input, filepath):
+    if isinstance(html_input, bytes):
+        html_input = html_input.decode("utf-8")
     if isinstance(html_input, str):
         with open(filepath, 'w') as outfile:
             outfile.write(html_input)
     else:
+        print(type(html_input))
         raise ValueError("HTML returned bad format")
 
 
