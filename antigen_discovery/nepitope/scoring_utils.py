@@ -184,6 +184,11 @@ class Score(object):
 
     @staticmethod
     def _get_score_list(df):
+        """
+
+        :param df:
+        :return:
+        """
         return list(df['Score'].values)
 
     @staticmethod
@@ -549,7 +554,7 @@ class FileConsolidation(object):
             cols = list(df1.columns)
 
             for item in cols:
-                if item.startswith('HL'):
+                if item.startswith('H'):
                     unique_alleles.append(item)
 
         return unique_alleles
@@ -724,6 +729,10 @@ class Alignment(object):
                 prot.append(line)
 
             return prot[0]
+
+
+#def run_clustalo(file_dir):
+
 
 
 class AddData (object):
