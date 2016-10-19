@@ -1,27 +1,20 @@
-import pandas as pd
+import pandas
 import numpy as np
-from itertools import product
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+from difflib import SequenceMatcher
 
 
 class SimilartiyScore(object):
-    def __init__(self, dataframe_list, reference_protein_id=None):
+
+    def __init__(self, dataframe_list, fasta_file, reference_protein_id):
 
         self.df_list = dataframe_list
-        self.filtered_df = self._first_pass_filter()
-        self.pos_list = self._retrieve_positions_list()
-        self.ranges_list = self._retrieve_ranges_list()
-        self.prot_list = self._get_protein_list()
-        self.referece = self._get_ref_prot(reference_protein_id=reference_protein_id)
-        self.matches = self._find_matches()
-        self.num_matches = [len(i) for i in self.matches]
-        self.total_matches = self._find_total_matches()
-        self.num_total_matches = [len(i) for i in self.total_matches]
-        self.columns = ['Proteins', 'Matches Positions', 'Total Num Matches', 'Ranges']
-        self.rank_by_matches = self._get_df_ranked_by_matches()
-        # self.ordered_list =
-        self.iterative_ranking = self.create_ranking_by_affiniy_location()
+        self.fasta_file = fasta_file
+        self.reference_pep = reference_protein_id
+        self.filtered_df = self._first_pass_filter_and_add_ranges()
+        self.possible_align_ranges = self._get_possible_alignment_ranges()[0]
+        self.prot_list = self._get_possible_alignment_ranges()[1]
+        self.df_sliced_by_range = self._slice_df_by_range()
 
     ##############################################################################################
     # FUNCTIONS FOR ITERATIVE RANKING: These functions are aiming at creating the attribute      #
@@ -35,88 +28,166 @@ class SimilartiyScore(object):
     #     proteins (excluding the previous one).  Process goes on until every protein is ranked. #
     ##############################################################################################
 
-    def create_ranking_by_affiniy_location(self):
-        """
-        :param reference_protein_id: to check the proper names of the protein IDs,
-        check the attribute 'prot_list' by running SimilairtyScore.prot_list for
-        a complete list.
-        :return: list of of peptides ordered as defined above.
-        """
-        list_ordered = []
-        base_df = self.rank_by_matches
-        first_entry = self._get_first_entry(base_df, self.referece)
-        list_ordered.append(first_entry)
-        base_df = base_df[base_df.Proteins != self.referece]
+    def _get_possible_alignment_ranges(self):
 
-        for i in range(len(base_df)):
-            if i == 0:
-                df = base_df
+        possible_nmers = []
+        max_val = []
+        proteins = []
+
+        for i in self.filtered_df:
+            max_val.append(i.Pos.max())
+            possible_nmers = list(i['n-mer'].unique())
+            proteins.extend(list(i.ID.unique()))
+
+        true_max = max(max_val)
+        # possible_nmers = list(set(possible_nmers))
+
+        ranges = []
+
+        for i, nmer in enumerate(sorted(possible_nmers)):
+            ranges.append(list(self._get_ranges(true_max - nmer + 2, nmer)))
+
+        return ranges[-1], list(set(proteins))
+
+    @staticmethod
+    def _get_ranges(max_val, nmer):
+
+        my_range = []
+        for i in range(max_val):
+            my_range.append([list(range(i, i + nmer))])
+
+        return my_range
+
+    def _slice_df_by_range(self):
+
+        dfs_in_range = []
+        dff = pandas.concat(self.filtered_df)
+
+        for idx, specific_range in enumerate(self.possible_align_ranges):
+
+            mask = dff.Range.apply(self.is_subset, args=(specific_range,))
+            df_to_append = dff[mask]
+
+            if len(df_to_append != 0):
+                df_to_append['Group'] = idx
+                dfs_in_range.append(df_to_append)
+
+        return dfs_in_range
+
+    @staticmethod
+    def is_subset(col_set, range_set):
+        return set(col_set[0]).issubset(set(range_set[0]))
+
+    def run_pipe(self):
+
+        ordered_protein_list = []
+        ordered_scores_list = []
+        ordered_protein_list.append(self.reference_pep)
+        ordered_scores_list.append(100)
+
+        for i in range(0, len(self.prot_list)):
+            reference_pep = self._update_ref_pep(ordered_protein_list)
+            dfs_of_interest = self._get_dfs_of_interest(reference_pep, ordered_protein_list)
+            concatd_filtered = self._concat_filter(dfs_of_interest, ordered_protein_list)
+            groups = self._get_group_numbers(concatd_filtered)
+            subset_by_group = self._subset_by_group(groups, concatd_filtered, reference_pep)
+            prot_and_score = self._return_protein_and_associated_score(subset_by_group)
+            sorted_scores_series = self._make_scoring(prot_and_score, ordered_protein_list)
+            ordered_protein_list.append(self._select_top_peptide(sorted_scores_series)[0])
+            ordered_scores_list.append(self._select_top_peptide(sorted_scores_series)[1])
+
+        return ordered_protein_list, ordered_scores_list
+
+    @staticmethod
+    def _select_top_peptide(my_series):
+        prot_name = my_series.index[0]
+        prot_score = my_series.values[0]
+        return prot_name, prot_score
+
+    @staticmethod
+    def _make_scoring(prot_and_score, ordered_protein_list):
+
+        to_df = pandas.DataFrame(prot_and_score[0], columns=prot_and_score[0][0])
+        to_df = to_df.T.sort_values(by=0, ascending=False).T[1::]
+
+        iterprots = iter(prot_and_score)
+        next(iterprots)
+
+        for i in iterprots:
+            len_1_df = pandas.DataFrame(i, columns=i[0]).T.sort_values(by=0, ascending=False).T[1::]
+            to_df = to_df.append(len_1_df)
+        sorted_series = to_df.sum().sort_values()
+
+        if len(ordered_protein_list) > 1:
+            sorted_series = sorted_series[~sorted_series.index.isin(ordered_protein_list[:-1])]
+
+        return sorted_series
+
+    def _return_protein_and_associated_score(self, subset_by_group):
+
+        prot_and_score = []
+        for i in subset_by_group:
+            i = i.drop_duplicates(subset='ID').sort_values(by=['Similarity To Ref', 'n-mer', 'ID'], ascending=False)
+            present_proteins = set(list(i.ID.values))
+            other_proteins = [x for x in self.prot_list if x not in present_proteins]
+            all_prots = list(i.ID.values) + other_proteins
+            scores = list(i['Similarity To Ref'].values)
+            scores.extend([0] * len(other_proteins))
+            prot_and_score.append([all_prots, scores])
+
+        return prot_and_score
+
+    def _subset_by_group(self, groups, concatd_filtered, reference_pep):
+
+        subset_by_group = []
+        for group in groups:
+            ref_pep = concatd_filtered.loc[(concatd_filtered['Group'] == group) &
+                                           (concatd_filtered['ID'] == reference_pep)].Peptide.values
+
+            if len(ref_pep) != 0:
+                subset_df = concatd_filtered.loc[concatd_filtered['Group'] == group]
+                subset_df['Similarity To Ref'] = subset_df['Peptide'].apply(self.similar, args=(ref_pep[0],))
+                subset_by_group.append(subset_df)
+
+        return subset_by_group
+
+    @staticmethod
+    def similar(a, b):
+        return SequenceMatcher(None, a, b).ratio()
+
+    @staticmethod
+    def _get_group_numbers(concatd_filtered):
+        groups = list(concatd_filtered.Group.unique())
+        return groups
+
+    @staticmethod
+    def _concat_filter(list_df, ordered_protein_list):
+        conctttt = pandas.concat(list_df).drop_duplicates(subset=['1-log50k', 'nM', 'Rank', 'Pos', 'Peptide',
+                                                                  'ID', 'Allele', 'Affinity Level', 'n-mer',
+                                                                  'Final Pos'])
+
+        if len(ordered_protein_list) < 1:
+            return conctttt
+        else:
+            return conctttt[~conctttt.ID.isin(ordered_protein_list[:-1])]
+
+    def _get_dfs_of_interest(self, reference_pep, ordered_protein_list):
+
+        dfs_containing_reference_pep = []
+
+        for df in self.df_sliced_by_range:
+            if reference_pep not in df.ID.unique():
+                continue
             else:
-                df = remaining_data
+                if len(ordered_protein_list) > 1:
+                    df = df[~df['ID'].isin(ordered_protein_list[:-1])]
+                dfs_containing_reference_pep.append(df)
 
-            new_ref, remaining_ranges, remaining_prots = self._get_remaining_data(
-                df.sort_values(by='Total Num Matches'))
-            new_matches_list = self._find_total_matches_by_ref(new_ref[-1], remaining_ranges)
-            num_new_matches = self._get_num_new_matches(new_matches_list)
-
-            remaining_data = self._get_iterative_df_with_matches(remaining_prots, new_matches_list,
-                                                                 num_new_matches, remaining_ranges)
-            list_ordered.append(new_ref)
-
-            df = self._get_ordered_list_into_pandas(list_ordered)
-            df['Percentage Match To Self'] = pd.Series(self._find_percentage_match(df))
-            df['Percentage Match To Prev'] = pd.Series(self._find_percentage_match_to_prev(df))
-
-        return df.drop_duplicates(subset='Proteins')
-
-    def _get_ordered_list_into_pandas(self, ordered_list):
-        df = pd.DataFrame(ordered_list, columns=self.columns)
-        return df
-
-    def _get_remaining_data(self, df):
-        return self._get_new_ref(df), self._get_remaining_ranges(df), self._get_remaining_proteins(df)
+        return dfs_containing_reference_pep
 
     @staticmethod
-    def _get_first_entry(base_df, reference_protein_id):
-        first_item = base_df.loc[base_df['Proteins'] == reference_protein_id].values.tolist()[0]
-        first_item[2] = 'All'
-        return first_item
-
-    @staticmethod
-    def _get_num_new_matches(matches_list):
-        return [len(i) for i in matches_list]
-
-    @staticmethod
-    def _get_new_ref(df):
-        return df.head(1).values.tolist()[0]
-
-    @staticmethod
-    def _get_remaining_ranges(df):
-        return df['Ranges'][1::].values.tolist()
-
-    @staticmethod
-    def _get_remaining_proteins(df):
-        return df['Proteins'][1::].values.tolist()
-
-    def _get_iterative_df_with_matches(self, remaining_prots, matches_positions, num_matches, ranges):
-
-        data_ = [remaining_prots, matches_positions, num_matches, ranges]
-        df = pd.DataFrame(data_, index=self.columns)
-
-        return df.T
-
-    @staticmethod
-    def _find_total_matches_by_ref(ref, remaining_ranges):
-
-        ref_ranges = [item for sublist in ref for item in sublist]
-        total_matches = []
-
-        for range_list in remaining_ranges:
-            comparison_ranges = [item for sublist in range_list for item in sublist]
-            intersec_list = list(set(ref_ranges).intersection(set(comparison_ranges)))
-            total_matches.append(intersec_list)
-
-        return total_matches
+    def _update_ref_pep(ordered_protein_list):
+        return ordered_protein_list[-1]
 
     ################################################################################
     # FUNCTIONS FOR PLOTTING: Data to plotted are the peptide ranges per protein   #
@@ -164,14 +235,14 @@ class SimilartiyScore(object):
         ax.set_ylim([-1, len(prot_list) + 1])
         ax.invert_yaxis()
         plt.title('High Affinity Score Locations')
+        # colors = cm.rainbow(np.linspace(0, 1, len(plot_data)))
         colors = self._get_color_map(color_data, plot_data)
-
         for i, coordinate in enumerate(plot_data):
             plt.scatter(coordinate[0], coordinate[1], c=colors[i], linewidth='0', s=50, vmin=-1, vmax=1,
                         label=prot_list[i], cmap='rainbow_r')
             # plt.scatter(coordinate[0], coordinate[1], color=colors, label=prot_list[i])
 
-        plt.legend(bbox_to_anchor=(1.2, 1), loc=1, ncol=1)
+        plt.legend(bbox_to_anchor=(1.5, 1), loc=1, ncol=1)
         plt.show()
 
     ##############################################################################
@@ -179,105 +250,31 @@ class SimilartiyScore(object):
     # shared data within the class.                                              #
     ##############################################################################
 
-    def _find_percentage_match(self, df):
+    ##### FILTER, ADD RANGE ####
+    def _first_pass_filter_and_add_ranges(self):
 
-        high_aa_count_list = self._high_aa_count(df)
-        list_matches = df['Total Num Matches'][1::].values.tolist()
-        percentage_list = [a / float(b) for a, b in zip(list_matches, high_aa_count_list)]
-        percentage_list.insert(0, 100)
-
-        return percentage_list
-
-    def _find_percentage_match_to_prev(self, df):
-
-        list_matches = df['Total Num Matches'][1::].values.tolist()
-        ref = df['Len High AA'][:-1].values.tolist()
-        percentage_to_ref_list = [a / float(b) for a, b in zip(list_matches, ref)]
-        percentage_to_ref_list.insert(0, 100)
-
-        return percentage_to_ref_list
-
-    def _high_aa_count(self, df):
-
-        df['Len High AA'] = df['Ranges'].apply(self._get_high_aa_count)
-        return df['Len High AA'][1::].values.tolist()
-
-    @staticmethod
-    def _get_high_aa_count(x):
-        ref_ranges = [item for sublist in x for item in sublist]  # flatten
-        return len(ref_ranges)
-
-    def _get_ref_prot(self, reference_protein_id=None):
-        if reference_protein_id:
-            return reference_protein_id
-        else:
-            reference = [self.pos_list[0][j][0] for j in range(len(self.pos_list[0]))]
-            return reference
-
-    def _find_matches(self):
-        matches = []
-        ref = [self.pos_list[0][j][0] for j in range(len(self.pos_list[0]))]
-
-        for i in range(1, len(self.pos_list)):
-            yy = [self.pos_list[i][j][0] for j in range(len(self.pos_list[i]))]
-            intersec_list = list(set(ref).intersection(set(yy)))
-
-
-            matches.append(intersec_list)
-            matches.append(list(set(ref).intersection(set(yy))))
-
-        return matches
-
-    def _find_total_matches(self):
-
-        ref_ranges = [item for sublist in self.ranges_list[0] for item in sublist]
-        total_matches = []
-
-        for range_list in self.ranges_list:
-            comparison_ranges = [item for sublist in range_list for item in sublist]
-            intersec_list = list(set(ref_ranges).intersection(set(comparison_ranges)))
-            total_matches.append(intersec_list)
-
-        return total_matches
-
-    def _get_df_ranked_by_matches(self):
-
-        data_ = [self.prot_list, self.total_matches, self.num_total_matches, self.ranges_list]
-        df = pd.DataFrame(data_, index=['Proteins', 'Matches Positions', 'Total Num Matches', 'Ranges'])
-
-        return df.T
-
-    def _retrieve_ranges_list(self):
-
-        ranges_list = []
-        for single_list in self.pos_list:
-            ranges_list.append([list(range(pos[0], pos[1] + 1)) for pos in single_list])
-
-        return ranges_list
-
-    def _first_pass_filter(self):
         filtered_dfs = []
         for i in self.df_list:
             filt_ = i.loc[i['Affinity Level'] == 'High']
             clean = self._return_clean(filt_)
             filtered_dfs.append(clean)
 
-        return filtered_dfs
+        filtered_dfs_range_added = self._add_df_range(filtered_dfs)
 
-    def _get_protein_list(self):
-        prots = []
-        for i in self.filtered_df:
-            prots.append(i.ID.unique()[0])
+        return filtered_dfs_range_added
 
-        if len(prots) == len(self.df_list):
-            return prots
+    @staticmethod
+    def _add_df_range(filtered_df):
 
-        else:
-            prots = []
-            for i in self.df_list:
-                prots.append(i.ID.unique()[0])
+        range_added = []
 
-            return prots
+        for i in filtered_df:
+            i['Final Pos'] = i['Pos'] + i['n-mer']
+            i['Range'] = i[['Pos', 'Final Pos']].apply(lambda x: [list(range(x[0], x[1]))], axis=1)
+            i = i.sort_values(by='Pos')
+            range_added.append(i)
+
+        return range_added
 
     @staticmethod
     def _return_clean(df):
@@ -285,26 +282,3 @@ class SimilartiyScore(object):
         df = df.loc[df['Peptide'].str.contains('--') == False]
         return df
 
-    def _retrieve_positions_list(self):
-        _pos_ID = []
-        for i in self.filtered_df:
-            i['Final Pos'] = i['Pos'] + i['n-mer']
-            i = i.sort_values(by='Pos')
-            _pos_ID.append(i[['Pos', 'Final Pos']].values.tolist())
-
-        return _pos_ID
-
-    # def _plot_in_euclidean_space(some_lists)
-
-    @staticmethod
-    def _calc_min_dist(arr1, arr2):
-        return min(product(arr1, arr2), key=lambda t: abs(t[0] - t[1]))
-
-    @staticmethod
-    def _pad_smaller_list(list_):
-        threshold = 5
-        for i in range(len(ls_2)):
-            distance = ls_2[i] - ls_1[i]
-            print(distance)
-            if distance > threshold:
-                ls_2.insert(i, 0)
