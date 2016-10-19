@@ -1,6 +1,10 @@
 import pandas
 from nepitope import scoring_utils
 
+"""
+Module for testing consistency of data gathered from Reference paper
+"""
+
 
 def join_files(files):
     list_dfs = []
