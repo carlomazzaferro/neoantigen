@@ -5,36 +5,19 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 class Plotter(object):
+
     def __init__(self, prot_list, scores_list, df_list):
+        """
+
+        :param prot_list: full list of proteins (sorted by similarity score)
+        :param scores_list: list of similarity scores
+        :param df_list: list of dataframes used in  the comparison/ranking step
+        """
 
         self.scores = scores_list[0:-1]
         self.prot_list = prot_list[0:-1]
         self.df_list = df_list
         self.plot_data = self._get_plot_data()
-
-    def plotting_function(self):
-
-        plt.figure(figsize=(15, 25))
-        ax = plt.gca()
-        ax.set_ylim([-1, len(self.prot_list) + 1])
-        ax.invert_yaxis()
-        plt.title('High Affinity Score Locations')
-        # colors = cm.rainbow(np.linspace(0, 1, len(plot_data)))
-        colors = self._get_color_map()
-
-        fig, ax = plt.subplots()
-        cax = fig.add_axes([-100, max(self.plot_data[0][0]) + 500, -1, len(self.prot_list)])
-        im = ax.imshow(colors, cmap='rainbow_r')
-        fig.colorbar(im, cax=cax, orientation='horizontal')
-
-        for i, coordinate in enumerate(self.plot_data):
-            plt.scatter(coordinate[0], coordinate[1], c=colors[i],
-                        linewidth='0', s=50, vmin=-1, vmax=1, label=self.prot_list[i], cmap='rainbow_r')
-            # plt.scatter(coordinate[0], coordinate[1], color=colors, label=prot_list[i])
-
-
-            plt.legend(self.scores, bbox_to_anchor=(1.5, 1), loc=1, ncol=1)
-            # plt.legend
 
     def plotting_function_updated(self):
 
@@ -63,7 +46,6 @@ class Plotter(object):
         bar.ax.invert_yaxis()
 
     # ('Difference between peptide normalized on a 0-1 scale')
-
 
     def _get_color_map(self, scores):
 
