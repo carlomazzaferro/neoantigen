@@ -189,69 +189,16 @@ class SimilartiyScore(object):
     def _update_ref_pep(ordered_protein_list):
         return ordered_protein_list[-1]
 
-    ################################################################################
-    # FUNCTIONS FOR PLOTTING: Data to plotted are the peptide ranges per protein   #
-    # methods available for affinity levels of selected protein against all others #
-    # or for pairs of proteins.                                                    #
-    ################################################################################
-
-    def plot_affinity_regions(self):
-        plot_data = self._retrieve_plot_data(self.ranges_list)
-        protein_list = self.prot_list
-        self.plotting_function(plot_data, protein_list)
-
-    def plot_iterative_ranking_plot(self):
-        to_plot = self._retrieve_plot_data(self.iterative_ranking.Ranges.values.tolist())
-        protein_list = self.iterative_ranking.Proteins.values.tolist()
-        color_data = self.iterative_ranking['Percentage Match To Prev'][1::].values.tolist()
-        color_data.insert(0, 0.0)
-        self.plotting_function(to_plot, protein_list, color_data)
-
-    @staticmethod
-    def _retrieve_plot_data(range_list):
-
-        concatd_ranges_list = []
-        for range_ in range_list:
-            concatd_ranges_list.append(list(set([item for sublist in range_ for item in sublist])))
-
-        to_plot = [[ranges, [i + 1] * len(ranges)] for i, ranges in enumerate(concatd_ranges_list)]
-
-        return to_plot
-
-    @staticmethod
-    def _get_color_map(color_data, plot_data):
-
-        color_list = []
-        for i, color in enumerate(color_data):
-            interpolated_col = np.interp(color, [0, max(color_data)], [-1, 1])
-            full_list = np.full(len(plot_data[i][0]), interpolated_col)
-            color_list.append(full_list)
-
-        return color_list
-
-    def plotting_function(self, plot_data, prot_list, color_data):
-        plt.figure(figsize=(15, 25))
-        ax = plt.gca()
-        ax.set_ylim([-1, len(prot_list) + 1])
-        ax.invert_yaxis()
-        plt.title('High Affinity Score Locations')
-        # colors = cm.rainbow(np.linspace(0, 1, len(plot_data)))
-        colors = self._get_color_map(color_data, plot_data)
-        for i, coordinate in enumerate(plot_data):
-            plt.scatter(coordinate[0], coordinate[1], c=colors[i], linewidth='0', s=50, vmin=-1, vmax=1,
-                        label=prot_list[i], cmap='rainbow_r')
-            # plt.scatter(coordinate[0], coordinate[1], color=colors, label=prot_list[i])
-
-        plt.legend(bbox_to_anchor=(1.5, 1), loc=1, ncol=1)
-        plt.show()
-
     ##############################################################################
     # FUNCTIONS TO RETRIEVE CLASS ATTRIBUTES: Mostly helper functions to get the #
     # shared data within the class.                                              #
     ##############################################################################
 
-    ##### FILTER, ADD RANGE ####
     def _first_pass_filter_and_add_ranges(self):
+        """
+        Retrieve only high affinity locations, and add the range of the peptide
+        :return:
+        """
 
         filtered_dfs = []
         for i in self.df_list:
