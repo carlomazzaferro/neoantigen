@@ -11,6 +11,8 @@ ID = 'Q99ZW2'
 website = 'uniprot'
 
 
+
+
 def fetch_protein(filepath, website=None, ID=None, fetch_fasta=False):
     dict_websites = {'uniprot': 'http://www.uniprot.org/uniprot/',
                      'refseq': 'http://www.ncbi.nlm.nih.gov/protein/'
