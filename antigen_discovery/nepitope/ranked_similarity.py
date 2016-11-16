@@ -1,6 +1,4 @@
 import pandas
-import numpy as np
-import matplotlib.pyplot as plt
 from difflib import SequenceMatcher
 
 
@@ -25,7 +23,7 @@ class SimilartiyScore(object):
     #  3. Append the one with lowest number of matches to a list (priority queue)                #
     #  4. The protein appended becomes the reference protein                                     #
     #  5. Repeat process with the appended protein, which is compared to all the other           #
-    #     proteins (excluding the previous one).  Process goes on until every protein is ranked. #
+    #     proteins (excluding the previous one). Process goes on until every protein is ranked. #
     ##############################################################################################
 
     def _get_possible_alignment_ranges(self):
@@ -79,13 +77,18 @@ class SimilartiyScore(object):
         return set(col_set[0]).issubset(set(range_set[0]))
 
     def run_pipe(self):
+        """
+        The pipeline itself. Runs as described on header comment within class
+        :return:
+        """
 
         ordered_protein_list = []
         ordered_scores_list = []
-        ordered_protein_list.append(self.reference_pep)
-        ordered_scores_list.append(100)
+        ordered_protein_list.append(self.reference_pep)   #Seed protein
+        ordered_scores_list.append(100)   #Default score of seed protein
 
         for i in range(0, len(self.prot_list)):
+
             reference_pep = self._update_ref_pep(ordered_protein_list)
             dfs_of_interest = self._get_dfs_of_interest(reference_pep, ordered_protein_list)
             concatd_filtered = self._concat_filter(dfs_of_interest, ordered_protein_list)
@@ -126,13 +129,14 @@ class SimilartiyScore(object):
     def _return_protein_and_associated_score(self, subset_by_group):
 
         prot_and_score = []
+
         for i in subset_by_group:
             i = i.drop_duplicates(subset='ID').sort_values(by=['Similarity To Ref', 'n-mer', 'ID'], ascending=False)
             present_proteins = set(list(i.ID.values))
             other_proteins = [x for x in self.prot_list if x not in present_proteins]
             all_prots = list(i.ID.values) + other_proteins
             scores = list(i['Similarity To Ref'].values)
-            scores.extend([0] * len(other_proteins))
+            scores.extend([0] * len(other_proteins))      #Pad zero for non-present proteins
             prot_and_score.append([all_prots, scores])
 
         return prot_and_score
@@ -202,7 +206,7 @@ class SimilartiyScore(object):
 
         filtered_dfs = []
         for i in self.df_list:
-            filt_ = i.loc[i['Affinity Level'] == 'High']
+            filt_ = i.loc[i['Affinity Level'] ==  ('High' or 'Intermediate')]
             clean = self._return_clean(filt_)
             filtered_dfs.append(clean)
 
@@ -216,8 +220,8 @@ class SimilartiyScore(object):
         range_added = []
 
         for i in filtered_df:
-            i['Final Pos'] = i['Pos'] + i['n-mer']
-            i['Range'] = i[['Pos', 'Final Pos']].apply(lambda x: [list(range(x[0], x[1]))], axis=1)
+            i['Final Pos'] = i['Pos'] + i['n-mer']-1
+            i['Range'] = i[['Pos', 'Final Pos']].apply(lambda x: [list(range(x[0], x[1] + 1))], axis=1)
             i = i.sort_values(by='Pos')
             range_added.append(i)
 
