@@ -1,6 +1,6 @@
 import pandas
 from nepitope import scoring_utils
-
+import os
 #############################################################################
 # UTILITIES TO RETRIEVE ORTHOLOGUES HAVING HIGH AFFINITY FROM MSA ALIGNMENT #
 #############################################################################
@@ -64,15 +64,16 @@ def _deep_list_to_df(list_):
 def fasta_per_allele_per_nmer(pepdata, filepath):
     nmers = _get_nmers(pepdata)
     alleles = _get_alleles(pepdata)
-
-    for nmer in nmers:
-        for allele in alleles:
-            sliced = _slice_df(pepdata, nmer, allele)
-            if check_size(sliced):
-                new_name = sliced.apply(_apply_transf_to_protein_id, axis=1)
-                sliced['transf'] = pandas.Series(new_name, index=sliced.index)
-                peptide_data = _return_list_of_lists(sliced)
-                _write_fasta(filepath, nmer, allele, peptide_data)
+    prot_ids = _get_prot_ids(pepdata)
+    for prot_id in prot_ids:
+        for nmer in nmers:
+            for allele in alleles:
+                sliced = _slice_df(pepdata, nmer, allele)
+                if check_size(sliced):
+                    new_name = sliced.apply(_apply_transf_to_protein_id, axis=1)
+                    sliced['transf'] = pandas.Series(new_name, index=sliced.index)
+                    peptide_data = _return_list_of_lists(sliced)
+                    _write_fasta(filepath, nmer, allele, peptide_data, prot_id)
 
 
 def _apply_transf_to_protein_id(x):
@@ -80,16 +81,9 @@ def _apply_transf_to_protein_id(x):
     new_name = '>' + str(x['Initial AA']) + '_' + name
     return new_name
 
-def _get_nmers(pepdata):
-    return pepdata['n-mer'].unique()
 
-
-def _get_alleles(pepdata):
-    return pepdata['Allele'].unique()
-
-
-def _slice_df(pepdata, nmer, allele):
-    return pepdata.loc[(pepdata['n-mer'] == nmer) & (pepdata['Allele'] == allele)]
+def _slice_df(pepdata, nmer, allele, prot_id):
+    return pepdata.loc[(pepdata['n-mer'] == nmer) & (pepdata['Allele'] == allele) & (pepdata['ID'] == prot_id)]
 
 
 def check_size(sliced):
@@ -103,9 +97,9 @@ def _return_list_of_lists(sliced):
     return sliced[['Peptide', 'transf']].values.tolist()
 
 
-def _write_fasta(filepath, nmer, allele, peptide_data):
+def _write_fasta(filepath, nmer, allele, peptide_data, prot_id):
     allele = allele.replace(':', '-')
-    with open(filepath + 'fasta_%s_%s.fasta' % (nmer, allele.replace(':', '_')), 'w') as out:
+    with open(filepath + 'fasta_%s_%s_%s.fasta' % (nmer, allele.replace(':', '_'), prot_id), 'w') as out:
         for i in peptide_data:
             out.write(i[1] + '\n')
             out.write(i[0].replace('-', 'X') + '\n')
@@ -118,24 +112,27 @@ def _write_fasta(filepath, nmer, allele, peptide_data):
 def find_swaps_write_to_fasta(high_priority_df, fasta_files_dir):
     nmers = _get_nmers(high_priority_df)
     alleles = _get_alleles(high_priority_df)
+    prot_ids = _get_prot_ids(high_priority_df)
 
-    for nmer in nmers:
-        for allele in alleles:
-            sliced = _slice_df(high_priority_df, nmer, allele)
-            if check_size(sliced):
-                list_of_lists = sliced[['n-mer', 'Allele', 'Pos', 'Peptide']].values.tolist()
-                for item in list_of_lists:
-                    swaps = _create_swaps(item[-1])
-                    _open_write_fasta(fasta_files_dir, item, swaps)
+    for prot_id in prot_ids:
+        os.mkdir(fasta_files_dir + '%s/' % prot_id)
+        for nmer in nmers:
+            for allele in alleles:
+                sliced = _slice_df(high_priority_df, nmer, allele, prot_id)
+                if check_size(sliced):
+                    list_of_lists = sliced[['n-mer', 'Allele', 'ID', 'Pos', 'Peptide']].values.tolist()
+                    for item in list_of_lists:
+                        swaps = _create_swaps(item[-1])
+                        _open_write_fasta(fasta_files_dir, item, swaps, prot_id)
 
 
-def _open_write_fasta(fasta_files_dir, data, swaps):
-    file_name = "_".join([fasta_files_dir, 'swap', data[-1], 'Pos', str(data[-2]),
-                          'Allele', str(data[-3]), 'nmer', str(data[-4])])
+def _open_write_fasta(fasta_files_dir, data, swaps, prot_id):
+    file_name = "_".join([fasta_files_dir + '%s/' % prot_id, 'swap', data[-1], 'Pos', str(data[-2]), 'ID', str(data[-3]).replace('_', '-'),
+                          'Allele', str(data[-4]), 'nmer', str(data[-5])])
 
     with open(file_name + '.fasta', 'w') as inf:
         for swap in swaps:
-            inf.write("".join(['>Streptococcus', '_', swap, '\n']))
+            inf.write("".join(['>', prot_id, '_', swap, '\n']))
             inf.write(swap + '\n')
 
 
@@ -155,6 +152,8 @@ def _insert_aa(string, index, aa):
     hash_string.insert(index, aa)
     return "".join(hash_string)
 
+def _get_prot_ids(pepdata):
+    return pepdata['ID'].unique()
 
 def _get_nmers(pepdata):
     return pepdata['n-mer'].unique()
@@ -164,12 +163,38 @@ def _get_alleles(pepdata):
     return pepdata['Allele'].unique()
 
 
-def _slice_df(pepdata, nmer, allele):
-    return pepdata.loc[(pepdata['n-mer'] == nmer) & (pepdata['Allele'] == allele)]
-
-
 def check_size(sliced):
     if len(sliced) == 0:
         return False
     else:
         return True
+
+def create_separate_lists(fasta_file):
+    """
+    Creates 2 lists from a fasta file
+    :param fasta_file: file
+    :return: one list for the IDs in the file and one list for the proteins/peptides in it
+    """
+    with open(fasta_file) as infile:
+        all_list = []
+        peptide = ""
+        lines = infile.readlines()
+        for i in range(0, len(lines)):
+            if lines[i].startswith('>'):
+                all_list.append(lines[i].rstrip())
+            else:
+                peptide += lines[i].rstrip()
+            try:
+                if lines[i + 1].startswith('>'):
+                    all_list.append(peptide)
+                    peptide = ""
+            except:
+                all_list.append(peptide)
+        j = []
+        k = []
+        for i in all_list:
+            if i.startswith('>'):
+                j.append(i)
+            else:
+                k.append(i)
+    return j, k
