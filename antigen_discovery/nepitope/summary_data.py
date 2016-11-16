@@ -1,16 +1,22 @@
 import pandas
 from tabulate import tabulate
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy
+from nepitope import pep_utils
 
-sns.set(style='ticks')
 
 
 class SummaryData(object):
 
     @classmethod
     def summarize_data_for_each_mhc_pred(cls, list_container, original_peptides_data, results_of_interest):
+        """
+        Only one currently used
+        :param list_container:
+        :param original_peptides_data:
+        :param results_of_interest:
+        :return:
+        """
         obj = cls()
         obj.original_data = original_peptides_data
         obj.results_of_interest = results_of_interest
@@ -56,30 +62,23 @@ class SummaryData(object):
         return obj
 
     @classmethod
-    def summarize_all_data(cls, list_container, show_names=False):
+    def summarize_all_data(cls, list_container, fasta_file):
         obj = cls()
         obj.container = list_container
-        obj.titles = obj.get_title()
+        obj.fasta_file = fasta_file
+        obj.proteins = list(pandas.concat(obj.container).ID.unique())
+        obj.prot_lengths = obj.get_list_lengths()
         obj.num_prots = len(obj.proteins)
         obj.list_high_affinity_peps = obj.get_list_affinity(level='high')
         obj.list_med_affinity_peps = obj.get_list_affinity(level='med')
         obj.list_low_affinity_peps = obj.get_list_affinity(level='low')
         obj.list_no_affinity_peps = obj.get_list_affinity(level='no')
-        obj.lengths = obj.get_list_lengths()
-        obj.hits = obj.get_list_hits()
-        obj.list_high_affinity_per_aa = obj.get_list_high_affinity_per_aa()
 
-        if show_names:
-            obj.display = obj.display_proteins()
+        obj.data_list = [obj.proteins, obj.list_high_affinity_peps, obj.list_med_affinity_peps,
+                         obj.list_low_affinity_peps, obj.list_no_affinity_peps, obj.prot_lengths]
 
-        obj.data_list = [obj.proteins, obj.titles, obj.list_high_affinity_per_aa,
-                         obj.list_high_affinity_peps, obj.list_med_affinity_peps,
-                         obj.list_low_affinity_peps, obj.list_no_affinity_peps,
-                         obj.lengths, obj.hits]
-
-        obj.indexes = ['Accession ID', 'Title', 'High Affinity Peptides Per AA',
-                       'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
-                       'Num No Affinity Peps (Not Shown In Plot)', 'Protein Length', 'Alignment Hits']
+        obj.indexes = ['Protein', 'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
+                       'Num No Affinity Peps', 'Protein Length']
 
         return obj
 
@@ -238,8 +237,14 @@ class SummaryData(object):
     def get_list_lengths(self):
 
         lengths = []
-        for i in self.container:
-            lengths.append(self.get_length(i))
+        idx, seq = pep_utils.create_separate_lists(self.fasta_file)
+        idx = [id_.strip('>') for id_ in idx]
+        joint_idx_seq = list(zip(idx, seq))
+
+        for prot in self.proteins:
+            for pair in joint_idx_seq:
+                if prot[0:15] == pair[0][0:15]:
+                    lengths.append(len(pair[1]))
         return lengths
 
     def get_list_hits(self):
@@ -317,10 +322,7 @@ class SummaryData(object):
 
         return titles
 
-    def display_proteins(self):
-        for i in range(0, len(self.proteins)):
-            print("Protein Accession Number: %s" % self.proteins[i])
-            print("Associated Alignment Title: %s \n" % self.titles[i])
+    """
 
     def plot_affinity_versus_conservation_score(self):  # , nmer=9):
         out_df = self.my_df
@@ -341,3 +343,4 @@ class SummaryData(object):
         fg.map(plt.axhline, y=out_df['Score'].mean(), xmin=0, xmax=1,
                color='b', alpha=0.5, ls='dotted', lw=1.3,
                label='Mean Conservation Score').set_axis_labels("Peptide Window", "Consevation").add_legend()
+    """
