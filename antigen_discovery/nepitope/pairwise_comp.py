@@ -2,6 +2,7 @@ import pandas
 import re
 from nepitope import pep_utils
 
+
 class PairwiseComp(object):
 
     def __init__(self, list_dfs, min_nmer, original_fasta, threshold=None):
@@ -162,7 +163,7 @@ class PairwiseComp(object):
     def _get_id_protseq_tuple(self):
 
         peps, prots = pep_utils.create_separate_lists(self.fasta)
-        peps_short_named = [pep.strip('>') for pep in peps]
+        peps_short_named = [pep.strip('>').replace('.', '_') for pep in peps]
 
         return list(zip(peps_short_named, prots))
 
