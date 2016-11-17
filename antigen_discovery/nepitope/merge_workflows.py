@@ -1,9 +1,11 @@
 from collections import Counter
 import pandas
+import re
+from nepitope import pep_utils
 
 class MergeSwapsAndComp(object):
 
-    reference = 'StreptococcusPyogenes_reference'
+    reference = 'S__pyogenes_Cas9'
 
     def __init__(self, pw_comp_df, swaps_df, num_peptide_swaps):
 
@@ -15,7 +17,65 @@ class MergeSwapsAndComp(object):
         self.top_loc_matches = self._Most_Common(self.loc_matches)
         self.priority_df = self.get_priority_df()
         self.swap_list = self.get_priority_swap_list()
-        self.top_swap_list = self.select_top(self.swap_list)
+        self.top_swap_df = self.select_top(self.swap_list)
+
+    def get_modified_fasta(self, fasta, fasta_out_dir):
+
+        idx, seq = pep_utils.create_separate_lists(fasta)
+        zipped = list(zip(idx, seq))
+        zipped = [list(x) for x in zipped]
+        swapped_fasta = []
+
+        peps_to_swap = self._get_swap_peps()
+        orig_peps = self._get_orig_peps()
+        orig_and_swaps = dict(zip(orig_peps, peps_to_swap))
+
+        for i in zipped:
+            if i[0][1::] == self.reference:
+                i[1] = self.replace_all(i[1], orig_and_swaps)
+            swapped_fasta.append(i)
+
+        with open(fasta_out_dir, 'w') as out:
+            for i in swapped_fasta:
+                out.write(i[0] + '\n')
+                out.write(i[1] + '\n')
+
+    @staticmethod
+    def replace_all(text, dic):
+        for i, j in dic.items():
+            text = text.replace(i, j)
+        return text
+
+    def get_modified_df_list(self, list_df):
+
+        peps_to_swap = self._get_swap_peps()
+        orig_peps = self._get_orig_peps()
+        orig_and_swaps = dict(zip(orig_peps, peps_to_swap))
+        print(orig_and_swaps)
+
+        for idx, df in enumerate(list_df):
+            if df.ID.unique()[0] == self.reference:
+                new_df = df
+                new_df.Peptide = new_df.Peptide.replace(orig_and_swaps)
+                ix = new_df.loc[new_df.Peptide.isin(peps_to_swap)].index
+                print(ix)
+                new_df.set_value(ix, 'Affinity Level', 'No')
+                list_df[idx] = new_df
+
+        return list_df
+
+    def _get_swap_peps(self):
+
+        swaps = []
+        list_swaps = list(self.top_swap_df['top scoring peptides'][0:self.n].values)
+        for i in list_swaps:
+            swap = list(filter(None, re.sub('[^A-Za-z0-9]+', ',', i).split(',')))[-3]
+            swaps.append(swap)
+
+        return swaps
+
+    def _get_orig_peps(self):
+        return self.top_swap_df['original peptide'].values.tolist()[0:self.n]
 
     def get_priority_df(self):
         df = pandas.concat(self.get_priority_swap_list())
@@ -76,7 +136,7 @@ class MergeSwapsAndComp(object):
 
     def _Most_Common(self, lst):
         data = Counter(lst)
-        return data.most_common(self.n)
+        return data.most_common(20)
 
 
 
