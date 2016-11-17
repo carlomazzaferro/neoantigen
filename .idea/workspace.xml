@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c0d5a75f-c90c-4ffd-800b-ae990434c964" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow 10-19-2016-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow 10-19-2016-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/CAS9 Engineering – Base Workflow.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/CAS9 Engineering – Base Workflow.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow 10-19-2016.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow 10-19-2016.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search .ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search .ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" />
     </list>
     <ignored path="neoantigen.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,8 +28,8 @@
       <file leaf-file-name="pairwise_comp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="960">
-              <caret line="104" column="11" selection-start-line="104" selection-start-column="11" selection-end-line="104" selection-end-column="11" />
+            <state relative-caret-position="497">
+              <caret line="199" column="32" selection-start-line="199" selection-start-column="32" selection-end-line="199" selection-end-column="32" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -44,8 +40,8 @@
       <file leaf-file-name="merge_workflows.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="29" column="43" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
+            <state relative-caret-position="480">
+              <caret line="37" column="31" selection-start-line="37" selection-start-column="31" selection-end-line="37" selection-end-column="31" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -163,10 +159,10 @@
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" />
         <option value="$PROJECT_DIR$/single_swapper.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" />
         <option value="$PROJECT_DIR$/merge_workflows.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
       </list>
     </option>
   </component>
@@ -519,9 +515,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2720" y="-677" width="1280" height="1418" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26290706" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26290706" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1040724" sideWeight="0.5369341" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.4940429" order="7" side_tool="false" content_ui="tabs" />
@@ -815,7 +811,7 @@
         <state relative-caret-position="2355">
           <caret line="165" column="21" selection-start-line="165" selection-start-column="21" selection-end-line="178" selection-end-column="34" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -876,16 +872,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="104" column="11" selection-start-line="104" selection-start-column="11" selection-end-line="104" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1620">
@@ -914,10 +900,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="497">
+          <caret line="199" column="32" selection-start-line="199" selection-start-column="32" selection-end-line="199" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="29" column="43" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
+        <state relative-caret-position="480">
+          <caret line="37" column="31" selection-start-line="37" selection-start-column="31" selection-end-line="37" selection-end-column="31" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
