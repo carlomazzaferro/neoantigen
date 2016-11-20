@@ -12,13 +12,18 @@ class FileConsolidation(object):
     """
     stable_cols = ['Pos', 'Peptide', 'ID']  #Columns that are always present
 
-    def __init__(self, filepath, fasta_file, from_alignmet=False):
+    threshold_levels = {'High': [0,50],
+                        'Intermediate': [50,500],
+                        'Low': [500, 5000],
+                        'No': [5000, 100000]}
+
+    def __init__(self, filepath, fasta_file):
         """
         When netMHC or any other prediction method is run locally, then it might be the case that you'll have multiple
         files, each containing prediction for different alleles/n-mers. This method takes care of loading them all
         and consolidating them for later processing.
         :param filepath: path to files
-        :param file_names: name of files
+        :param fasta_file: original fasta file
         :return:
         """
         self.fasta = fasta_file
@@ -26,6 +31,8 @@ class FileConsolidation(object):
         self.files = glob.glob(self.filepath + '*.xls')
         self.allele_list = self._get_allele_list_from_file_names()
         self.protein_list = self._get_prot_list(self.files)
+        self.original_prot_names = self._get_original_protein_name()
+        self.name_mapping = self.get_name_mapping()
 
     def return_df_list(self):    #USE
         """
@@ -47,18 +54,15 @@ class FileConsolidation(object):
     def optimized_list_df_by_prot(self, list_df):     #USE
 
         concatd = pandas.concat(list_df)
-        prot_list = list(concatd.ID.unique())
         concatd = self.aggregate_info(concatd)  ##affinity and len data
+        concatd.ID = concatd.ID.replace(self.name_mapping)    #rename protein names accoridng to original fasta file
+        prot_list = list(concatd.ID.unique())
 
         df_list_by_protein = []                 #slice by protein
         for i in prot_list:
             df_list_by_protein.append(concatd[concatd['ID'] == i])
 
-        orig_name_prot_list = []   #rename protein names accoridng to original fasta file
-        for i in df_list_by_protein:
-            orig_name_prot_list.append(self.replace_names_in_df(i))
-
-        return orig_name_prot_list
+        return df_list_by_protein
 
     @staticmethod
     def replace_X_with_underscore(df):
@@ -143,28 +147,23 @@ class FileConsolidation(object):
 
         return list_dfs
 
-    def get_name_mapping(self):   #USE
+    def _get_original_protein_name(self):
 
         orig_names = pep_utils.create_separate_lists(self.fasta)[0]
         orig_names = [orig_name.replace('.', '_').strip('>') for orig_name in orig_names]
-        abbr_names = self.protein_list
+
+        return orig_names
+
+    def get_name_mapping(self):   #USE
+
         name_mapping = {}
 
-        for abbr_name in abbr_names:
-            for orig_name in orig_names:
+        for abbr_name in self.protein_list:
+            for orig_name in self.original_prot_names:
                 if orig_name.startswith(abbr_name):
                     name_mapping[abbr_name] = orig_name
 
         return name_mapping
-
-    def replace_names_in_df(self, df):  #USE
-
-        name_mapping = self.get_name_mapping()
-
-        for key in name_mapping.keys():
-            if df.ID.unique()[0] == key:
-                df.ID = df.ID.str.replace(key, name_mapping[key])
-        return df
 
     def _get_file_names(self):  #USE
         files = []
@@ -195,3 +194,35 @@ class FileConsolidation(object):
         prot_ids = list(df1['ID'].unique())
 
         return prot_ids
+
+    def get_all_high_affinity_from_batch(self, threshold=None, csv_out=False, csv_dir=None):
+
+        threshold_range = self._return_threshold_level(threshold)
+        dfs = self.return_df_list()
+        conc = pandas.concat(dfs)
+        df = conc[(conc['nM'] > threshold_range[0]) & (conc['nM'] < threshold_range[1])]
+        df.ID = df.ID.replace(self.name_mapping)
+
+        if csv_out:
+            if not csv_dir:
+                raise ValueError('No csv directory specified')
+            else:
+                self._write_csv_out(csv_dir, df)
+        return df
+
+    @staticmethod
+    def _write_csv_out(csv_dir, df):
+        df.to_csv(csv_dir)
+        return 'File written to %s' % csv_dir
+
+    def _return_threshold_level(self, threshold):
+
+        if not threshold:
+            return [0,50]
+        if isinstance(threshold, str):
+            return self.threshold_levels[threshold]
+        if isinstance(threshold, int):
+            return [0, threshold]
+
+
+
