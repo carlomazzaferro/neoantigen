@@ -4,7 +4,6 @@ import sys
 import pandas
 import glob
 
-sys.path.append("/Users/carlomazzaferro/Documents/CCBB/antigen_discovery/")
 
 from nepitope import scoring_utils
 from nepitope.scoring_utils import Score
@@ -12,7 +11,6 @@ from nepitope.scoring_utils import Score
 
 
 file_name = os.path.dirname(os.path.realpath('__file__')) + '/tests/test_scoring.fasta'
-print file_name
 scoring = scoring_utils.Score(file_name, [9, 10, 11])
 
 l = [0.86281,  0.65371, 0.84304,  0.78496, 0.82407,  0.77538,  0.83054,  0.68654, 0.77331]
