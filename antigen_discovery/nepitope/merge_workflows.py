@@ -5,7 +5,9 @@ from nepitope import pep_utils
 
 class MergeSwapsAndComp(object):
 
-    reference = 'S__pyogenes_Cas9'
+    reference = 'StreptococcusPyogenes_reference'
+    num_common_peps = 50
+    no_return_cols = ['Most Comm',	'issubset' , 'Final Filter']
 
     def __init__(self, pw_comp_df, swaps_df, num_peptide_swaps):
 
@@ -17,8 +19,10 @@ class MergeSwapsAndComp(object):
         self.top_loc_matches = self._Most_Common(self.loc_matches)
         self.priority_df = self.get_priority_df()
         self.swap_list = self.get_priority_swap_list()
-        self.top_swap_df = self.select_top(self.swap_list)
+        self.top_swap_df = self.select_top()
 
+
+    ##### METHODS AND THEIR HELPERS ######
     def get_modified_fasta(self, fasta, fasta_out_dir):
 
         idx, seq = pep_utils.create_separate_lists(fasta)
@@ -77,11 +81,29 @@ class MergeSwapsAndComp(object):
     def _get_orig_peps(self):
         return self.top_swap_df['original peptide'].values.tolist()[0:self.n]
 
-    def get_priority_df(self):
+    def final_sort_and_filtering(self, df):
+        unique_priority_list = []
+
+        for top_loc_match in self.top_loc_matches:
+            sel, df = self._select_top(df, top_loc_match[0])
+            unique_priority_list.append(sel)
+        final_df = pandas.concat(unique_priority_list)[0:self.n]   #Number of wanted peptides
+        final_df = final_df.drop(self.no_return_cols, axis=1)      #Unwanted, used as placeholders
+
+        return final_df
+
+    @staticmethod
+    def _select_top(top_swap, top_loc_match):
+        top_swap['Final Filter'] = [top_loc_match in i for i in top_swap.Range]
+        return top_swap[top_swap['Final Filter'] == True], top_swap[top_swap['Final Filter'] == False]
+
+    #######-------#######------#######-------#######
+
+    def get_priority_df(self):                                  ## ATTRIBUTE METHODS
         df = pandas.concat(self.get_priority_swap_list())
         return df.groupby(df.index).first()
 
-    def get_priority_swap_list(self):
+    def get_priority_swap_list(self):                           ## ATTRIBUTE METHODS
         list_dfs = []
         for i in self.top_loc_matches:
             list_dfs.append(self.filter_non_most_commons(i[0]))
@@ -91,9 +113,10 @@ class MergeSwapsAndComp(object):
         self.swaps_df['Most Comm'] = self.swaps_df.Range.apply(lambda x: idx in x)
         return self.swaps_df[self.swaps_df['Most Comm'] == True]
 
-    def select_top(self, list_dfs):
+    def select_top(self):                             ## ATTRIBUTE METHODS
+
         maximal_list = []
-        for df in list_dfs:
+        for df in self.swap_list:
             ranges = df.Range.values
             df['issubset'] = df['original pos'].apply(lambda x: self.count_occurences(x, ranges, ))
             maximal_list.append(df.ix[df['issubset'].idxmax()])
@@ -102,30 +125,30 @@ class MergeSwapsAndComp(object):
         return df.groupby(df.index).first()
 
     @staticmethod
-    def count_occurences(pos, ranges):
+    def count_occurences(pos, ranges):                               ## ATTRIBUTE METHODS
         count = 0
         for i in ranges:
             if pos in i:
                 count += 1
         return count
 
-    def _get_ref_df(self):
+    def _get_ref_df(self):                                   ## ATTRIBUTE METHOD
         ref_df = self.original_df.loc[self.reference]
         return ref_df
 
-    def _get_swaps_df(self, swaps_df):
+    def _get_swaps_df(self, swaps_df):                       ## ATTRIBUTE METHODS
         swaps_df['Range'] = swaps_df.apply(lambda x: self._add_ranges_list(x['original pos'],
                                                                            x['original pos'] + x['nmer']), axis=1)
         return swaps_df
 
     @staticmethod
-    def _add_ranges_list(a, b):
+    def _add_ranges_list(a, b):                                ## ATTRIBUTE METHODS
         return list(range(a, b))
 
-    def _get_loc_matches(self):
+    def _get_loc_matches(self):                                  ## ATTRIBUTE METHODS
         return self._flatten(self.ref_df['Matches Loc'].values.tolist())
 
-    def _flatten(self, x):
+    def _flatten(self, x):                                        ## ATTRIBUTE METHODS
         result = []
         for el in x:
             if hasattr(el, "__iter__") and not isinstance(el, str):
@@ -134,9 +157,6 @@ class MergeSwapsAndComp(object):
                 result.append(el)
         return result
 
-    def _Most_Common(self, lst):
+    def _Most_Common(self, lst):                                    ## ATTRIBUTE METHODS
         data = Counter(lst)
-        return data.most_common(20)
-
-
-
+        return data.most_common(self.num_common_peps)
