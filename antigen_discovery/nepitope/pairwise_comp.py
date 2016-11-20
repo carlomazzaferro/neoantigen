@@ -167,6 +167,7 @@ class PairwiseComp(object):
 
         return list(zip(peps_short_named, prots))
 
+
     @staticmethod
     def _get_threshold(threshold):
 
