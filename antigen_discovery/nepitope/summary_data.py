@@ -5,7 +5,6 @@ import numpy
 from nepitope import pep_utils
 
 
-
 class SummaryData(object):
 
     @classmethod
@@ -80,6 +79,7 @@ class SummaryData(object):
         obj.indexes = ['Protein', 'Num High Affinity Peps', 'Num Med Affinity Peps', 'Num Low Affinity Peps',
                        'Num No Affinity Peps', 'Protein Length']
 
+        obj.dataframe
         return obj
 
     @classmethod

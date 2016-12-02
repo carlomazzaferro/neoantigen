@@ -2,38 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c0d5a75f-c90c-4ffd-800b-ae990434c964" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/peptide_utilities.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/tests/summary_results_per_prediction.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/CAS9 Engineering – Base Workflow - TEST FROM SCRATCH-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/CAS9 Engineering – Base Workflow - TEST FROM SCRATCH.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/nmerized_10_1383" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/nmerized_11_127" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/nmerized_11_128" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/nmerized_8_1385" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/nmerized_9_155" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_10_1383.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_127.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_128.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_8_1385.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_9_155.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_test_scoring.fasta.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/processed_testing.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/antigen_discovery/tests/test_out.txt" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/tests/fasta_base_new_prots_HLA-A0101_10.xls" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/tests/fasta_base_new_prots_HLA-A0101_9.xls" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/file_checker.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/models.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/antigen_discovery/tests/test_models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search -checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search -checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Tree Vizualization-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Tree Vizualization-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Base File Creation For Immune Stealth Workflow.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Base File Creation For Immune Stealth Workflow.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow  - Other Proteins.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth  - Ranked Similarity -  New Workflow - Original Proteins.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search - Mouse Alleles.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search - Mouse Alleles.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search .ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Immune Stealth MultiProt Analysis From Prot List - Combinatorial Search .ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/Tree Vizualization.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/Tree Vizualization.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/tests/test_fasta.fasta" afterPath="$PROJECT_DIR$/antigen_discovery/tests/test_fasta.fasta" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/tests/tests.py" afterPath="$PROJECT_DIR$/antigen_discovery/tests/tests.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py" afterPath="$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py" />
     </list>
     <ignored path="neoantigen.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,25 +37,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="pairwise_comp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
+      <file leaf-file-name="merge_workflows.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2077">
-              <caret line="213" column="81" selection-start-line="213" selection-start-column="81" selection-end-line="213" selection-end-column="81" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="90">
+              <caret line="9" column="64" selection-start-line="9" selection-start-column="64" selection-end-line="9" selection-end-column="64" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="merge_workflows.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
+      <file leaf-file-name="mhc_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="97">
-              <caret line="9" column="64" selection-start-line="9" selection-start-column="64" selection-end-line="9" selection-end-column="64" />
+            <state relative-caret-position="915">
+              <caret line="64" column="33" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
               <folding>
-                <element signature="e#0#31#0" expanded="true" />
+                <marker date="1480286869000" expanded="true" signature="101:1549" ph="..." />
               </folding>
             </state>
           </provider>
@@ -80,8 +62,8 @@
       <file leaf-file-name="msa_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="975">
-              <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+            <state relative-caret-position="436">
+              <caret line="308" column="0" selection-start-line="308" selection-start-column="0" selection-end-line="308" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -89,21 +71,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mhc_utils.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py">
+      <file leaf-file-name="summary_data.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pep_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1260">
-              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="85" selection-end-column="111" />
+            <state relative-caret-position="-90">
+              <caret line="81" column="21" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -111,26 +83,42 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="net_MHC_interface.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="68" column="44" selection-start-line="68" selection-start-column="44" selection-end-line="68" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="197">
+              <caret line="212" column="22" selection-start-line="212" selection-start-column="22" selection-end-line="212" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peptide_utilities.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/peptide_utilities.py">
+      <file leaf-file-name="net_MHC_interface.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="58" column="51" selection-start-line="58" selection-start-column="51" selection-end-line="58" selection-end-column="51" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="795">
+              <caret line="55" column="27" selection-start-line="55" selection-start-column="27" selection-end-line="55" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ranked_similarity.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="767">
+              <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scoring_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="47">
+              <caret line="199" column="17" selection-start-line="199" selection-start-column="17" selection-end-line="199" selection-end-column="17" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -138,33 +126,21 @@
       <file leaf-file-name="modify_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
+            <state relative-caret-position="1485">
               <caret line="105" column="60" selection-start-line="105" selection-start-column="16" selection-end-line="105" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_modify_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="990">
-              <caret line="73" column="43" selection-start-line="73" selection-start-column="43" selection-end-line="73" selection-end-column="43" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_fasta.fasta" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_fasta.fasta">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="29" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="1082" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="peptide_utilities.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/peptide_utilities.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-16">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="5" selection-end-column="35" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -191,29 +167,35 @@
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/plotting_utils.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/CAS9 Engineering – Base Workflow.ipynb" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/alignment_tool.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" />
         <option value="$PROJECT_DIR$/single_swapper.py" />
         <option value="$PROJECT_DIR$/merge_workflows.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
         <option value="$PROJECT_DIR$/tests/test_modify_data.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/tests/test_modify_data.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/tests/tests.py" />
-        <option value="$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/peptide_utilities.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/tests/test_models.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/file_checker.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/prediction.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" />
+        <option value="$PROJECT_DIR$/antigen_discovery/nepitope/models.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="x" value="1440" />
+    <option name="y" value="-677" />
+    <option name="width" value="1280" />
+    <option name="height" value="1418" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -316,56 +298,21 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Coursera Data Structures &amp; Algorithms/Data Structures" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/carlomazzaferro/Documents/Code/neoantigen/antigen_discovery/nepitope/pep_utils.py" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/carlomazzaferro/anaconda/envs/py35/lib/python3.5/site-packages/tabulate.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="FullScreen" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/antigen_discovery/tests" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/antigen_discovery" />
       <recent name="$PROJECT_DIR$/antigen_discovery/nepitope" />
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/antigen_discovery/tests" />
+    </key>
   </component>
-  <component name="RunManager" selected="Python tests.test">
-    <configuration default="false" name="merge_workflows" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="neoantigen" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_modify_data" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="neoantigen" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_modify_data.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.prediction">
     <configuration default="false" name="test_modify_data (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -419,6 +366,40 @@
       <option name="USE_PATTERN" value="false" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="prediction" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/antigen_discovery/nepitope" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="neoantigen" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/antigen_discovery/nepitope/models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="test_models" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/antigen_discovery/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="neoantigen" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/antigen_discovery/tests/test_models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -579,19 +560,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python tests.test" />
-      <item index="1" class="java.lang.String" itemvalue="Python.merge_workflows" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test_modify_data" />
-      <item index="3" class="java.lang.String" itemvalue="Python.test_modify_data (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_modify_data (2)" />
-      <item index="5" class="java.lang.String" itemvalue="Python tests.Nosetests in tests" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test_modify_data (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test_modify_data (2)" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in tests" />
+      <item index="4" class="java.lang.String" itemvalue="Python.prediction" />
+      <item index="5" class="java.lang.String" itemvalue="Python.test_models" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in tests" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_modify_data (2)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_modify_data (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test_modify_data" />
-        <item index="4" class="java.lang.String" itemvalue="Python.merge_workflows" />
+        <item index="0" class="java.lang.String" itemvalue="Python.prediction" />
+        <item index="1" class="java.lang.String" itemvalue="Python.test_models" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in tests" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_modify_data (2)" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test_modify_data (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -612,24 +593,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_tests - 2016.11.17 at 21h 50m 29s.xml">
-      <configuration name="Nosetests in tests" configurationId="tests" />
-    </history-entry>
-    <history-entry file="test - 2016.09.12 at 16h 51m 56s.xml">
-      <configuration name="test" configurationId="tests" />
-    </history-entry>
-    <history-entry file="test - 2016.11.17 at 21h 50m 46s.xml">
-      <configuration name="test" configurationId="tests" />
-    </history-entry>
-    <history-entry file="test - 2016.11.17 at 21h 52m 26s.xml">
-      <configuration name="test" configurationId="tests" />
-    </history-entry>
-    <history-entry file="test - 2016.11.17 at 21h 52m 46s.xml">
-      <configuration name="test" configurationId="tests" />
-    </history-entry>
-    <history-entry file="test - 2016.11.17 at 21h 53m 12s.xml">
-      <configuration name="test" configurationId="tests" />
-    </history-entry>
     <history-entry file="test - 2016.11.17 at 21h 53m 42s.xml">
       <configuration name="test" configurationId="tests" />
     </history-entry>
@@ -642,20 +605,38 @@
     <history-entry file="test - 2016.11.18 at 11h 24m 22s.xml">
       <configuration name="test" configurationId="tests" />
     </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 51m 01s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 51m 23s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 51m 32s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 52m 44s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 53m 05s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
+    <history-entry file="test - 2016.11.22 at 13h 53m 09s.xml">
+      <configuration name="test" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <frame x="1440" y="-677" width="1280" height="1418" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23326287" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26290706" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14285715" sideWeight="0.5401112" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2820513" sideWeight="0.48768863" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.4940429" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23975904" sideWeight="0.4598888" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2790347" sideWeight="0.49722" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.4940429" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26506025" sideWeight="0.4598888" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27831325" sideWeight="0.49722" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22774327" sideWeight="0.4725973" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11764706" sideWeight="0.4725973" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -665,25 +646,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14285715" sideWeight="0.5401112" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.4940429" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23975904" sideWeight="0.4598888" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2790347" sideWeight="0.49722" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22774327" sideWeight="0.4725973" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23326287" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2820513" sideWeight="0.48768863" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -703,47 +665,12 @@
           <url>file://$PROJECT_DIR$/antigen_discovery/nepitope/alignment_tool.py</url>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py</url>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
       </breakpoints>
       <option name="time" value="7" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/alignment_tool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1560">
-          <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1290">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -755,9 +682,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -765,9 +690,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -775,20 +698,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/nmerized_10_1381" />
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_test_scoring.fasta.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_test_scoring.fasta.txt" />
     <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/stderr.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -796,48 +711,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/nmerized_8_1385">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_9_155.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_127.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_128.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_10_1383.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_8_1385.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/nmerized_8_1385" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_9_155.txt" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_127.txt" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_11_128.txt" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_10_1383.txt" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_nmerized_8_1385.txt" />
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/condition_specific_tools.py" />
     <entry file="file://$PROJECT_DIR$/neoantigen/VarP-master/VarP/tests/testHandleReaders.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -879,16 +758,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3615">
-          <caret line="248" column="0" selection-start-line="248" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/alignment_tool.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -904,27 +773,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="24" column="8" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3225">
-          <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="25" column="23" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -932,9 +780,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15105">
           <caret line="1007" column="0" selection-start-line="1007" selection-start-column="0" selection-end-line="1007" selection-end-column="0" />
-          <folding>
-            <element signature="e#115#146#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -942,31 +787,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="26775">
           <caret line="1820" column="8" selection-start-line="1820" selection-start-column="8" selection-end-line="1820" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_out.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_testing.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_out.txt" />
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_testing.txt" />
     <entry file="file://$PROJECT_DIR$/antigen_discovery/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -974,17 +803,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -996,50 +814,88 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py">
+    <entry file="file://$USER_HOME$/anaconda/envs/py35/lib/python3.5/site-packages/tabulate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="990">
-          <caret line="73" column="43" selection-start-line="73" selection-start-column="43" selection-end-line="73" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="106">
+          <caret line="660" column="7" selection-start-line="660" selection-start-column="7" selection-end-line="660" selection-end-column="7" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="105" column="60" selection-start-line="105" selection-start-column="16" selection-end-line="105" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-70">
+          <caret line="213" column="81" selection-start-line="213" selection-start-column="81" selection-end-line="213" selection-end-column="81" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
+        <state relative-caret-position="1230">
           <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="85" selection-end-column="111" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="845">
+          <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="94" selection-end-column="19" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/file_checker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="104" selection-start-line="13" selection-start-column="104" selection-end-line="13" selection-end-column="104" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/test_modify_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="537">
+          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
+        <state relative-caret-position="90">
           <caret line="9" column="64" selection-start-line="9" selection-start-column="64" selection-end-line="9" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="64" column="33" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
           <folding>
-            <element signature="e#0#31#0" expanded="true" />
+            <marker date="1480286869000" expanded="true" signature="101:1549" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2077">
-          <caret line="213" column="81" selection-start-line="213" selection-start-column="81" selection-end-line="213" selection-end-column="81" />
+        <state relative-caret-position="-90">
+          <caret line="81" column="21" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -1048,38 +904,60 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="975">
-          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        <state relative-caret-position="436">
+          <caret line="308" column="0" selection-start-line="308" selection-start-column="0" selection-end-line="308" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="68" column="44" selection-start-line="68" selection-start-column="44" selection-end-line="68" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/peptide_utilities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="58" column="51" selection-start-line="58" selection-start-column="51" selection-end-line="58" selection-end-column="51" />
+        <state relative-caret-position="-16">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="5" selection-end-column="35" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py">
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
+        <state relative-caret-position="1485">
+          <caret line="105" column="60" selection-start-line="105" selection-start-column="16" selection-end-line="105" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/scoring_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="47">
+          <caret line="199" column="17" selection-start-line="199" selection-start-column="17" selection-end-line="199" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/ranked_similarity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="767">
+          <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/net_MHC_interface.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="795">
+          <caret line="55" column="27" selection-start-line="55" selection-start-column="27" selection-end-line="55" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="212" column="22" selection-start-line="212" selection-start-column="22" selection-end-line="212" selection-end-column="22" />
           <folding />
         </state>
       </provider>

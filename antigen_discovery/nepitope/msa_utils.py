@@ -306,3 +306,11 @@ class AddData (object):
     @staticmethod
     def _get_nmers_from_affinity_df(scores_df):
         return list(scores_df['n-mer'].unique())
+
+"""
+class PyhloTree(object):
+
+    def __init__(self):
+
+        self.msa_file
+"""
