@@ -3,6 +3,7 @@ import pandas
 import re
 from nepitope import pep_utils
 
+
 class MergeSwapsAndComp(object):
 
     reference = 'StreptococcusPyogenes_reference'

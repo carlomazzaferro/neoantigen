@@ -17,7 +17,7 @@ class FileConsolidation(object):
                         'Low': [500, 5000],
                         'No': [5000, 100000]}
 
-    def __init__(self, filepath, fasta_file):
+    def __init__(self, filepath, fasta_file):#, single_protein=False, prot_id=None):
         """
         When netMHC or any other prediction method is run locally, then it might be the case that you'll have multiple
         files, each containing prediction for different alleles/n-mers. This method takes care of loading them all
@@ -178,7 +178,7 @@ class FileConsolidation(object):
             file_info = os.path.splitext(file)[0].split('_')
 
             for inf in file_info:
-                if inf.startswith('HLA'):
+                if inf.startswith('H'):
                     alleles.append(inf)
         return alleles
 
