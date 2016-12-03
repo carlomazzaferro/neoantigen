@@ -4,7 +4,12 @@ from mhc_parser import net_mhc_func
 import glob
 import os
 from shutil import move, rmtree
+import pandas
 
+
+####### METHODS FOR RUNNING NETMHC ##########
+
+#TODO: test netMHC interface methods
 
 def run_mhc(pred, fasta_location, mhc_path):
     nmer = [pred.nmer]
@@ -54,6 +59,8 @@ def reorg_files(tmp_dir):
     for i in dirs:
         rmtree(i)
 
+######## OTHER METHODS ########
+
 
 def filter_low_affinity(collection, protein_id, threshold):
 
@@ -66,5 +73,19 @@ def filter_low_affinity(collection, protein_id, threshold):
     return below_threshold
 
 
-######
+def to_df(dictionary_collection, cols, protein_id):
+    protein_data = dictionary_collection[protein_id]
+    pred_data = []
+
+    for dat in protein_data:
+        elemnts = []
+        for elem in dat.data_list:
+            elemnts.append(elem)
+        elemnts.append(dat.nmer)
+        pred_data.append(elemnts)
+
+    df = pandas.DataFrame(pred_data, columns=cols)
+    df.Pos = df.Pos.apply(lambda x: int(x))
+
+    return df
 
