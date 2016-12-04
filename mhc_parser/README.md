@@ -3,86 +3,85 @@ Data Structure
 Package for parsing netMHC predictions. Data is stored in a
 
 
-
+General Info:
  
- `class PredictionCollection`
  
-    `PredictionCollection.dictionary_collections
-            
-            [ { protein_1 : [ Prediction
-                              Prediction
-                              ...
-                              Prediction.Swaps.swap
-                            
-                                [ { swap : Prediction },
-                                  { swap : Prediction },
-                                    ...,
-                                  { swap : Prediction }
-                                ]
-                             ],       
-               
-              { protein_2 : [ Prediction
-                              Prediction
-                              ...,
-                              Prediction.Swaps.swap
-                        
-                                [ { swap : Prediction },
-                                  { swap : Prediction },
-                                  ...,
-                                  { swap : Prediction }
-                                ]
-                                  
-                             ],
-                             
-                ...,                   
+    class PredictionCollection
+ 
+         PredictionCollection.dictionary_collections
+                
+                [ { protein_1 : [ Prediction
+                                  Prediction
+                                  ...
+                                  Prediction.Swaps.swap
                                 
-              { protein_N : [ Prediction
-                              Prediction
-                              ...,
-                              Prediction.Swaps.swap
-                        
-                                [ { swap : Prediction },
-                                  { swap : Prediction },
-                                    ...
-                                  { swap : Prediction }  
-                                ]
-                                  
-                             ]
+                                    [ { swap : Prediction },
+                                      { swap : Prediction },
+                                        ...,
+                                      { swap : Prediction }
+                                    ]
+                                 ],       
+                   
+                  { protein_2 : [ Prediction
+                                  Prediction
+                                  ...,
+                                  Prediction.Swaps.swap
                             
-            ]`
+                                    [ { swap : Prediction },
+                                      { swap : Prediction },
+                                      ...,
+                                      { swap : Prediction }
+                                    ]
+                                      
+                                 ],
+                                 
+                    ...,                   
+                                    
+                  { protein_N : [ Prediction
+                                  Prediction
+                                  ...,
+                                  Prediction.Swaps.swap
+                            
+                                    [ { swap : Prediction },
+                                      { swap : Prediction },
+                                        ...
+                                      { swap : Prediction }  
+                                    ]
+                                      
+                                 ]
+                                
+                ]`
          
                              
-                                                                         
-`class Prediction #Holds all the info about a single prediction.`
+More specific information about the Prediction class:                                                                    
 
-`#I.e.:`
-`Prediction.allele
-Prediction.original_position
-Prediction.protein
-Prediction.affinity_level
-Prediction.rank
-Prediction.core_pep
-Prediction.h_avg_ranks
-Prediction.n_binders 
-Prediction.allele 
-Prediction.nmer`
 
-And as shown above, it also holds data about the possible swaps:
-       `Prediction.Swap.swaps`
-       
-For high-affinity peptides (user-defined thershold), the Swap class has as attribute a dictionary with the following structure:
+    class Prediction #Holds all the info about a single prediction.
+    
+        #I.e.:
+        Prediction.allele
+        Prediction.original_position
+        Prediction.protein
+        Prediction.affinity_level
+        Prediction.rank
+        Prediction.core_pep
+        Prediction.h_avg_ranks
+        Prediction.n_binders 
+        Prediction.allele 
+        Prediction.nmer`
 
-`Prediction.Swap.swaps
+And as shown above, it also holds data about the possible swaps. For high-affinity peptides (user-defined thershold), the Swap class has as attribute a dictionary with the following structure:
 
-    {'swap1': Prediction,
-     'swap2': Prediction,
-     'swap3': Prediction,
-      ...
-     'swapN': Prediction}`
+    `Prediction.Swap.swaps
+
+        {'swap1': Prediction,
+         'swap2': Prediction,
+         'swap3': Prediction,
+          ...
+         'swapN': Prediction}`
 
      
-     
-Where swapK is a singly-modified peptide from the original, high-affinity peptide. 
+Where `swapK` is a singly-modified peptide from the original, high-affinity peptide. 
         
 
                     
