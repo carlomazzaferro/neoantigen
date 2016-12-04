@@ -4,10 +4,10 @@ Package for parsing netMHC predictions. Data is stored in a
 
 
 
-   ```
-    class PredictionCollection
-    
-        PredictionCollection.dictionary_collections
+ 
+ `class PredictionCollection`
+ 
+    `PredictionCollection.dictionary_collections
             
             [ { protein_1 : [ Prediction
                               Prediction
@@ -49,24 +49,24 @@ Package for parsing netMHC predictions. Data is stored in a
                                   
                              ]
                             
-            ] 
+            ]`
+         
                              
                                                                          
-`Prediction` class also holds all the info about a single prediction. 
+`class Prediction #Holds all the info about a single prediction.`
 
-I.e.:
-      `Prediction.allele
-       Prediction.original_position 
-       Prediction.peptide 
-       Prediction.protein
-       Prediction.affinity_level 
-       Prediction.rank
-       Prediction.core_pep 
-       Prediction.h_avg_ranks
-       Prediction.n_binders 
-       Prediction.allele 
-       Prediction.nmer
-      `
+`#I.e.:`
+`Prediction.allele
+Prediction.original_position
+Prediction.protein
+Prediction.affinity_level
+Prediction.rank
+Prediction.core_pep
+Prediction.h_avg_ranks
+Prediction.n_binders 
+Prediction.allele 
+Prediction.nmer`
+
 And as shown above, it also holds data about the possible swaps:
        `Prediction.Swap.swaps`
        
@@ -79,6 +79,7 @@ For high-affinity peptides (user-defined thershold), the Swap class has as attri
      'swap3': Prediction,
       ...
      'swapN': Prediction}`
+
      
      
 Where swapK is a singly-modified peptide from the original, high-affinity peptide. 
