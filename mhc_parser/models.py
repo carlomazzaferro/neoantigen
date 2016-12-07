@@ -7,7 +7,7 @@ from tabulate import tabulate
 import os
 from shutil import rmtree
 import importlib
-#importlib.reload(methods)
+importlib.reload(methods)
 
 
 class PredictionCollection(object):
@@ -17,20 +17,30 @@ class PredictionCollection(object):
                         'Low': [500, 5000],
                         'No': [5000, 100000]}
 
-    cols = ['Pos', 'Peptide', 'Protein', 'Affinity_level', 'rank', 'core_pep',
-            'h_avg_ranks', 'n_binders', 'allele', 'nmer']
+    cols = ['Pos', 'Peptide', 'ID', 'nM', 'Rank', 'Core',
+            'H_Avg_Ranks', 'N_binders', 'Allele', 'Nmer']
 
-    def __init__(self, files, fasta_file):
+    def __init__(self, files, fasta_file, threshold=None):
 
         self.files = files
         self.fasta = fasta_file
+        self.threshold = self._return_threshold_level(threshold)
         self.protein_list = self.protein_from_fasta()
+        self.seqs_list = self.sequence_from_fasta()
         self.dictionary_collection = self.dic_initiate()
 
     def dic_initiate(self):
         prediction_collection = {}
+        prot_seq_dic = dict(zip(self.protein_list, self.seqs_list))
+
         for protein in self.protein_list:
-            prediction_collection[protein] = []
+            for key in prot_seq_dic.keys():
+                if key.startswith(protein):
+
+                    prediction_collection[protein] = {}
+                    prediction_collection[protein]['Predictions'] = []
+                    prediction_collection[protein]['ProtSeq'] = prot_seq_dic[key]
+                    prediction_collection[protein]['High Affinity Ranges'] = []
 
         return prediction_collection
 
@@ -77,9 +87,19 @@ class PredictionCollection(object):
         data = line
         data.append(allele)
         pred_object = Prediction(data)
-        self.dictionary_collection[data[2]].append(pred_object)
+        self.dictionary_collection[data[2]]['Predictions'].append(pred_object)
+        if pred_object.nM < self.threshold[1]:
+            self.dictionary_collection[data[2]]['High Affinity Ranges'].append(self.get_ranges(pred_object))
 
         return Prediction(data)
+
+    @staticmethod
+    def get_ranges(pred_object):
+
+        final_pos = pred_object.Pos + pred_object.Nmer - 1
+        ranges = [list(range(pred_object.Pos, final_pos + 1))]
+
+        return ranges
 
     def predict_swaps(self, protein_id, threshold, net_mhc_path, dirty_mode=True):
         """
@@ -98,20 +118,22 @@ class PredictionCollection(object):
         """
 
         threshold_range = self._return_threshold_level(threshold)
-        prot_dic = self.dictionary_collection[protein_id]
+        prot_dic = self.dictionary_collection[protein_id]['Predictions']
         tmp_dir = "".join([os.path.dirname(self.fasta), '/temp/'])
         os.mkdir(tmp_dir)
         filtered_pred = []
 
         for pred in prot_dic:
-            if (pred.affinity_level > threshold_range[0]) & (pred.affinity_level < threshold_range[1]):
+            if (pred.nM > threshold_range[0]) & (pred.nM < threshold_range[1]):
                 filtered_pred.append(pred)
 
         for filt in filtered_pred:
+            #create fasta file containging swpas and run netMHC on the fly on the newly created fasta
             tmp_fasta_file = methods.write_to_fasta(filt, protein_id, tmp_dir)
             methods.run_mhc(filt, tmp_fasta_file, net_mhc_path)
 
         for filt in filtered_pred:
+            #parse the prediction to the Swap class
             pred_file = methods.retrive_xls(filt, tmp_dir)
             self.parse_swap_preds(pred_file, filt)
 
@@ -168,34 +190,34 @@ class Prediction(object):
         :param data: [peptide, allele, nmer, pos, protein, core_pep, h_avg_ranks, N_binders, affinity_lev]
         """
         self.data_list = self.check_data(data)
-        self.original_position = int(self.data_list[0])
-        self.peptide = self.data_list[1]
-        self.protein = self.data_list[2]
-        self.affinity_level = float(self.data_list[3])
-        self.rank = int(round(float(self.data_list[4])))
-        self.core_pep = self.data_list[5]
-        self.h_avg_ranks = int(round(float(self.data_list[6])))
-        self.n_binders = int(self.data_list[7])
-        self.allele = self.data_list[8]
-        self.nmer = len(self.peptide)
-        self.lists_to_print = [["Peptide Seq", self.peptide],
-                               ["Allele", self.allele],
-                               ["Peptide Length", self.nmer],
-                               ["Original Pos", self.original_position],
-                               ["Affinity Level", self.affinity_level],
-                               ["Core Pep", self.core_pep],
-                               ["Average Rank", self.h_avg_ranks],
-                               ["Number of High Binders", self.n_binders],
-                               ["Protein of Origin", self.protein]]
+        self.Pos = int(self.data_list[0])
+        self.Peptide = self.data_list[1]
+        self.ID = self.data_list[2]
+        self.nM = float(self.data_list[3])
+        self.Rank = int(round(float(self.data_list[4])))
+        self.Core = self.data_list[5]
+        self.H_Avg_Ranks = int(round(float(self.data_list[6])))
+        self.N_binders = int(self.data_list[7])
+        self.Allele = self.data_list[8]
+        self.Nmer = len(self.Peptide)
+        self.lists_to_print = [["Peptide Seq", self.Peptide],
+                               ["Allele", self.Allele],
+                               ["Peptide Length", self.Nmer],
+                               ["Original Pos", self.Pos],
+                               ["Affinity Level", self.nM],
+                               ["Core Pep", self.Core],
+                               ["Average Rank", self.H_Avg_Ranks],
+                               ["Number of High Binders", self.N_binders],
+                               ["Protein of Origin", self.ID]]
 
         self.Swap = self.get_swaps()
-
+Ω
     def __str__(self):
         return 'Basic Prediction Info: \n' + tabulate(self.lists_to_print)
 
     def get_swaps(self):
-        if self.affinity_level < 500:
-            return Swap(self.peptide, self.nmer, self.allele, self.protein, self.original_position)
+        if self.nM < 500:
+            return Swap(self.Peptide, self.Nmer, self.Allele, self.ID, self.Pos)
         else:
             return []
 
@@ -205,8 +227,6 @@ class Prediction(object):
 
 
 class Swap(object):
-
-    #TODO: test this.
 
     list_AA = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V']
 
@@ -221,11 +241,14 @@ class Swap(object):
 
     def generate_all_variants(self):
         for i in range(len(self.original_peptide)):
+            #Slice original peptdie into head, tail; place letter form list of amino acids in between.
             head = self.original_peptide[:i]
             tail = self.original_peptide[i + 1:]
             for letter in self.list_AA:
-                yield head + letter + tail
+                yield head + letter + tail    #Proves to be faster than "".join due to small length.
+                                              #Returns a generator
 
     def gen_swaps(self):
+        #Generator to list, exclude parent peptide
         return [v for v in self.generate_all_variants() if v != self.original_peptide]
 
