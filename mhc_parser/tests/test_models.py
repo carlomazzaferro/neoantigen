@@ -40,6 +40,15 @@ class TestModels(unittest.TestCase):
                                 [2, 'KKYSIGLDI', 'Test1', 22207.5, 31, 'KKYSIGLDI', 31, 0],
                                 [3, 'KYSIGLDIG', 'Test1', 29965.4, 48, 'KYSIGLDIG', 48, 0]]
 
+        self.swap_letters = ['A', 'B', 'C', 'D', 'E']
+        self.swap_data = {'ACC': ['BCC', 'CCC', 'DCC', 'ECC',
+                                  'AAC', 'ABC', 'ADC', 'AEC',
+                                  'ACA', 'ACB', 'ACD', 'ACE'],
+
+                          'BDE': ['ADE', 'CDE', 'DDE', 'EDE',
+                                  'BAE', 'BBE', 'BCE', 'BEE',
+                                  'BDA', 'BDB', 'BDC', 'BDD']}
+
     def test_swapping(self):
         self.assertEqual(len(self.peptide), self.nmer)
 
@@ -51,7 +60,7 @@ class TestModels(unittest.TestCase):
 
     def test_dic_initiate(self):
         init_dic = self.model_methods.dic_initiate()
-        self.assertEqual(list(init_dic.keys()).sort(), ['Test4', 'Test3','Test2', 'Test1'].sort())
+        self.assertEqual(list(init_dic.keys()).sort(), ['Test4', 'Test3', 'Test2', 'Test1'].sort())
 
     def test_digest(self):
 
@@ -66,23 +75,43 @@ class TestModels(unittest.TestCase):
             single_preds.append(pred)
 
         for i in single_preds:
-            print(i.affinity_level)
+            print(i.nM)
         print(self.model_methods.files)
 
         #parsing using the actual module
         multi_preds = self.model_methods.digest_multiple()[0:4]
 
         for i, _ in enumerate(single_preds):
-            self.assertEqual(single_preds[i].allele, multi_preds[i].allele)
-            self.assertEqual(single_preds[i].nmer, multi_preds[i].nmer)
-            self.assertEqual(single_preds[i].affinity_level, multi_preds[i].affinity_level)
-            self.assertEqual(single_preds[i].peptide, multi_preds[i].peptide)
-            self.assertEqual(single_preds[i].protein, multi_preds[i].protein)
+            self.assertEqual(single_preds[i].Allele, multi_preds[i].Allele)
+            self.assertEqual(single_preds[i].Nmer, multi_preds[i].Nmer)
+            self.assertEqual(single_preds[i].nM, multi_preds[i].nM)
+            self.assertEqual(single_preds[i].Peptide, multi_preds[i].Peptide)
+            self.assertEqual(single_preds[i].ID, multi_preds[i].ID)
             self.assertEqual(single_preds[i].lists_to_print, multi_preds[i].lists_to_print)
 
     @staticmethod
     def get_allele(iterator):
         return list(filter(None, next(iterator)))[0]
+
+    def test_swaps_generation(self):
+        original_pep1 = list(self.swap_data.keys())[0]
+        original_pep2 = list(self.swap_data.keys())[1]
+        swaps_1 = self.swap_data[original_pep1]
+        swaps_2 = self.swap_data[original_pep2]
+
+        self.assertEqual(swaps_1, self.gen_swaps(original_pep1))
+        self.assertEqual(swaps_2, self.gen_swaps(original_pep2))
+
+    #Functions taken verbatim from models class
+    def generate_all_variants(self, pep):
+        for i in range(len(pep)):
+            head = pep[:i]
+            tail = pep[i + 1:]
+            for letter in self.swap_letters:
+                yield head + letter + tail
+
+    def gen_swaps(self, pep):
+        return [v for v in self.generate_all_variants(pep) if v != pep]
 
 if __name__ == '__main__':
     unittest.main()

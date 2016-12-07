@@ -5,6 +5,7 @@ sys.path.append('/Users/carlomazzaferro/Documents/Code/neoantigen/')
 from mhc_parser import utilities, methods, models
 import pandas
 
+
 class TestModels(unittest.TestCase):
 
     def setUp(self):
@@ -31,10 +32,8 @@ class TestModels(unittest.TestCase):
         self.col_data = self.test_data[1]
         self.allele = [i for i in self.test_data[0] if i != ''][0]
         self.df = pandas.DataFrame(self.test_data[2:], columns=self.col_data)
-        self.df['allele'] = [self.allele]*len(self.df)
-        self.df['nmer'] = [len(self.test_data[2][1])]*len(self.df)
-        self.df = self.df.rename(columns={'ID':'Protein', 'nM':'Affinity_level', 'Rank': 'rank', 'Core': 'core_pep',
-                                          'H_Avg_Ranks': 'h_avg_ranks', 'N_binders': 'n_binders'})
+        self.df['Allele'] = [self.allele]*len(self.df)
+        self.df['Nmer'] = [len(self.test_data[2][1])]*len(self.df)
 
     def test_filtering(self):
 
@@ -45,7 +44,8 @@ class TestModels(unittest.TestCase):
         #parse filtered and unfiltered data
         #methods.filter_low_affinity requires a prediction collection object (dictionary)
         collection = {}
-        collection[protein_id] = self.parsing_function(self.test_data)
+        collection[protein_id] =  {}
+        collection[protein_id]['Predictions'] = self.parsing_function(self.test_data)
 
         #parse filtered data
         parse_filtered = self.parsing_function(self.filtered_test_data)
@@ -53,11 +53,11 @@ class TestModels(unittest.TestCase):
         methods_filtered = methods.filter_low_affinity(collection, protein_id, threshold)
 
         self.assertEqual(len(parse_filtered), len(methods_filtered))
-        self.assertEqual(parse_filtered[0].allele, methods_filtered[0].allele)
-        self.assertEqual(parse_filtered[0].nmer, methods_filtered[0].nmer)
-        self.assertEqual(parse_filtered[0].affinity_level, methods_filtered[0].affinity_level)
-        self.assertEqual(parse_filtered[0].peptide, methods_filtered[0].peptide)
-        self.assertEqual(parse_filtered[0].protein, methods_filtered[0].protein)
+        self.assertEqual(parse_filtered[0].Allele, methods_filtered[0].Allele)
+        self.assertEqual(parse_filtered[0].Nmer, methods_filtered[0].Nmer)
+        self.assertEqual(parse_filtered[0].nM, methods_filtered[0].nM)
+        self.assertEqual(parse_filtered[0].Peptide, methods_filtered[0].Peptide)
+        self.assertEqual(parse_filtered[0].ID, methods_filtered[0].ID)
         self.assertEqual(parse_filtered[0].lists_to_print, methods_filtered[0].lists_to_print)
 
     def parsing_function(self, data):
@@ -76,7 +76,9 @@ class TestModels(unittest.TestCase):
     def test_return_df(self):
         protein_id = 'Test1'
         collection = {}
-        collection[protein_id] = self.parsing_function(self.test_data)
+        collection[protein_id] = {}
+        collection[protein_id]['Predictions'] = self.parsing_function(self.test_data)
+
         df_from_metods = methods.to_df(collection, self.model_methods.cols, protein_id)
         self.assertEqual(list(df_from_metods.columns), list(self.df.columns))
         self.assertEqual(df_from_metods.values.tolist(), self.df.values.tolist())
