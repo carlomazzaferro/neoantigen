@@ -12,7 +12,7 @@ class PairwiseComp(object):
                         'Low': [500, 5000],
                         'No': [5000, 100000]}
 
-    def __init__(self, list_dfs, min_nmer, original_fasta, threshold=None):
+    def __init__(self, pred_collection, min_nmer, original_fasta, threshold=None):
 
         """
         :param list_dfs: list of dataframes coming from previous step
@@ -21,7 +21,7 @@ class PairwiseComp(object):
         :param threshold: #######Just High for now - need to be properly set######
         """
 
-        self.list_dfs = list_dfs
+        self.pred_col = pred_collection
         self.threshold = self._return_threshold_level(threshold)
         self.filt_dfs = self._first_pass_filter_and_add_ranges()
         self.min_nmer = min_nmer
@@ -270,7 +270,6 @@ class PairwiseComp(object):
         score_dict_per_len[prot_name]['Num High AA'] += high_aa_matches
         if matches_range not in score_dict_per_len[prot_name]['Matches Loc']:    #To eliminate duplicates
             score_dict_per_len[prot_name]['Matches Loc'].append(matches_range)
-        #print(score_dict_per_len[prot_name]['Matches Loc'][0])
 
     def _return_threshold_level(self, threshold):
         if not threshold:

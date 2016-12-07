@@ -10,47 +10,49 @@ General Info:
  
          PredictionCollection.dictionary_collections
                 
-                [ { protein_1 : [ Prediction
-                                  Prediction
-                                  ...
-                                  Prediction.Swaps.swap
-                                
-                                    [ { swap : Prediction },
-                                      { swap : Prediction },
-                                        ...,
-                                      { swap : Prediction }
-                                    ]
-                                 ],       
+                [ { protein_1 : {'High Affinity Regions : [region1, region 2, ...],
+                                 'ProtSeq : 'SNFEDNSKDAJSNFWIAIAIJFNWKSAM....',
+                                 'Predictions : [ Prediction,
+                                                  Prediction,
+                                                  ...
+                                                  Prediction.Swaps.swap
+                                                
+                                                    [ { swap : Prediction },
+                                                      { swap : Prediction },
+                                                        ...,
+                                                      { swap : Prediction }
+                                                    ]
+                                                 ],       
                    
-                  { protein_2 : [ Prediction
-                                  Prediction
-                                  ...,
-                                  Prediction.Swaps.swap
-                            
-                                    [ { swap : Prediction },
-                                      { swap : Prediction },
-                                      ...,
-                                      { swap : Prediction }
-                                    ]
-                                      
-                                 ],
+                  { protein_3 : {'High Affinity Regions : [region1, region 2, ...],
+                                 'ProtSeq : 'SNFEDNSKDAJSNFWIAIAIJFNWKSAM....',
+                                 'Predictions : [ Prediction,
+                                                  Prediction,
+                                                  ...
+                                                  Prediction.Swaps.swap
+                                                
+                                                    [ { swap : Prediction },
+                                                      { swap : Prediction },
+                                                        ...,
+                                                      { swap : Prediction }
+                                                    ]
+                                                 ],     
                                  
                     ...,                   
                                     
-                  { protein_N : [ Prediction
-                                  Prediction
-                                  ...,
-                                  Prediction.Swaps.swap
-                            
-                                    [ { swap : Prediction },
-                                      { swap : Prediction },
-                                        ...
-                                      { swap : Prediction }  
-                                    ]
-                                      
-                                 ]
-                                
-                ]`
+                  { protein_1 : {'High Affinity Regions : [region1, region 2, ...],
+                                 'ProtSeq : 'SNFEDNSKDAJSNFWIAIAIJFNWKSAM....',
+                                 'Predictions : [ Prediction,
+                                                  Prediction,
+                                                  ...
+                                                  Prediction.Swaps.swap
+                                                
+                                                    [ { swap : Prediction },
+                                                      { swap : Prediction },
+                                                        ...,
+                                                      { swap : Prediction }
+                                                    ]
+                                                 ],     `
          
                              
 More specific information about the Prediction class:                                                                    
@@ -72,13 +74,13 @@ More specific information about the Prediction class:
 
 And as shown above, it also holds data about the possible swaps. For high-affinity peptides (user-defined thershold), the Swap class has as attribute a dictionary with the following structure:
 
-    `Prediction.Swap.swaps
+    Prediction.Swap.swaps
 
         {'swap1': Prediction,
          'swap2': Prediction,
          'swap3': Prediction,
           ...
-         'swapN': Prediction}`
+         'swapN': Prediction}
 
      
 Where `swapK` is a singly-modified peptide from the original, high-affinity peptide. 

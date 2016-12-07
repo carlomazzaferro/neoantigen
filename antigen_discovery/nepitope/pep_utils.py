@@ -194,7 +194,7 @@ def create_separate_lists(fasta_file):
         k = []
         for i in all_list:
             if i.startswith('>'):
-                j.append(i)
+                j.append(i.strip('>'))
             else:
                 k.append(i)
     return j, k
