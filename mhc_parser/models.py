@@ -165,6 +165,9 @@ class PredictionCollection(object):
     def filter_low_aff(self, protein_id, threshold):
         return methods.filter_low_affinity(self.dictionary_collection, protein_id, threshold)
 
+    def filter_all(self, threshold):
+        return methods.filter_all(self.dictionary_collection, threshold)
+
     def protein_dataframe(self, protein_id):
         return methods.to_df(self.dictionary_collection, self.cols, protein_id)
 
@@ -211,7 +214,7 @@ class Prediction(object):
                                ["Protein of Origin", self.ID]]
 
         self.Swap = self.get_swaps()
-Ω
+
     def __str__(self):
         return 'Basic Prediction Info: \n' + tabulate(self.lists_to_print)
 
