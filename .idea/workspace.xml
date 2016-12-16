@@ -3,17 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="c0d5a75f-c90c-4ffd-800b-ae990434c964" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Base File Creation For Immune Stealth Workflow - Mouse Alleles-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/Base File Creation For Immune Stealth Workflow - Mouse Alleles-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/PredictionCollection-checkpoint.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/.ipynb_checkpoints/PredictionCollection-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" afterPath="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/antigen_discovery/PredictionCollection.ipynb" afterPath="$PROJECT_DIR$/antigen_discovery/PredictionCollection.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/.idea/workspace.xml" afterPath="$PROJECT_DIR$/mhc_parser/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/README.md" afterPath="$PROJECT_DIR$/mhc_parser/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/methods.py" afterPath="$PROJECT_DIR$/mhc_parser/methods.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/pairwise_comp.py" afterPath="$PROJECT_DIR$/mhc_parser/pairwise_comp.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/tests/test_methods.py" afterPath="$PROJECT_DIR$/mhc_parser/tests/test_methods.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/tests/test_models.py" afterPath="$PROJECT_DIR$/mhc_parser/tests/test_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/tests/test_pairwise_comp.py" afterPath="$PROJECT_DIR$/mhc_parser/tests/test_pairwise_comp.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mhc_parser/models.py" afterPath="$PROJECT_DIR$/mhc_parser/models.py" />
     </list>
     <ignored path="neoantigen.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,39 +26,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mhc_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="915">
-              <caret line="64" column="33" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
-              <folding>
-                <marker date="1480286869000" expanded="true" signature="101:1549" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="merge_workflows.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/merge_workflows.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mhc_parser/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1950">
-              <caret line="142" column="13" selection-start-line="142" selection-start-column="13" selection-end-line="142" selection-end-column="13" />
+            <state relative-caret-position="615">
+              <caret line="54" column="19" selection-start-line="54" selection-start-column="19" selection-end-line="54" selection-end-column="19" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
-                <marker date="1481144355000" expanded="true" signature="1114:1412" ph="..." />
-                <marker date="1481144355000" expanded="true" signature="1158:1412" ph="..." />
-                <marker date="1481144355000" expanded="true" signature="1202:1412" ph="..." />
-                <marker date="1481144355000" expanded="true" signature="5967:7753" ph="..." />
+                <marker date="1481839271000" expanded="true" signature="6078:7516" ph="..." />
               </folding>
             </state>
           </provider>
@@ -74,7 +42,7 @@
       <file leaf-file-name="pairwise_comp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mhc_parser/pairwise_comp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="267">
+            <state relative-caret-position="3555">
               <caret line="237" column="8" selection-start-line="237" selection-start-column="8" selection-end-line="237" selection-end-column="8" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -83,11 +51,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modify_data.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="modify_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="82" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+            <state relative-caret-position="1380">
+              <caret line="98" column="30" selection-start-line="98" selection-start-column="30" selection-end-line="98" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -96,8 +64,20 @@
       <file leaf-file-name="summary_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="573">
+            <state relative-caret-position="1005">
               <caret line="71" column="29" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pairwise_comp copy.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mhc_parser/pairwise_comp copy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="387">
+              <caret line="212" column="0" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -115,11 +95,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="methods.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="methods.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mhc_parser/methods.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="292">
+              <caret line="129" column="27" selection-start-line="129" selection-start-column="27" selection-end-line="129" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pairwise_comp.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3">
+              <caret line="110" column="40" selection-start-line="110" selection-start-column="40" selection-end-line="110" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -186,20 +176,20 @@
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/mhc_utils.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/msa_utils.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/models.py" />
-        <option value="$PROJECT_DIR$/mhc_parser/methods.py" />
-        <option value="$PROJECT_DIR$/mhc_parser/models.py" />
         <option value="$PROJECT_DIR$/mhc_parser/tests/test_methods.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py" />
         <option value="$PROJECT_DIR$/antigen_discovery/nepitope/pep_utils.py" />
         <option value="$PROJECT_DIR$/mhc_parser/pairwise_comp.py" />
+        <option value="$PROJECT_DIR$/mhc_parser/models.py" />
+        <option value="$PROJECT_DIR$/mhc_parser/methods.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="264" />
-    <option name="y" value="22" />
-    <option name="width" value="720" />
-    <option name="height" value="837" />
+    <option name="x" value="780" />
+    <option name="y" value="-1058" />
+    <option name="width" value="1280" />
+    <option name="height" value="1058" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -226,7 +216,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -242,20 +232,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="neoantigen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="neoantigen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="neoantigen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mhc_parser" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -293,7 +269,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -625,14 +601,14 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="264" y="22" width="720" height="837" extended-state="1" />
+    <frame x="780" y="-1058" width="1280" height="1058" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6151645" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29864973" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14285715" sideWeight="0.5401112" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.4940429" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23734939" sideWeight="0.4598888" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23706004" sideWeight="0.4598888" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11697722" sideWeight="0.4725973" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -665,13 +641,17 @@
           <url>file://$PROJECT_DIR$/antigen_discovery/nepitope/alignment_tool.py</url>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/mhc_parser/methods.py</url>
+          <line>129</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="7" />
+      <option name="time" value="8" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/processed_test_scoring.fasta.txt" />
     <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/stderr.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -788,13 +768,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-70">
-          <caret line="213" column="81" selection-start-line="213" selection-start-column="81" selection-end-line="213" selection-end-column="81" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/tests/tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="845">
@@ -860,7 +833,7 @@
         <state relative-caret-position="105">
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="false" />
             <marker date="1481135031000" expanded="true" signature="210:3870" ph="..." />
           </folding>
         </state>
@@ -870,9 +843,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="915">
           <caret line="64" column="33" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
-          <folding>
-            <marker date="1480286869000" expanded="true" signature="101:1549" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -884,23 +854,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mhc_parser/models.py">
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="142" column="13" selection-start-line="142" selection-start-column="13" selection-end-line="142" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-            <marker date="1481144355000" expanded="true" signature="1114:1412" ph="..." />
-            <marker date="1481144355000" expanded="true" signature="1158:1412" ph="..." />
-            <marker date="1481144355000" expanded="true" signature="1202:1412" ph="..." />
-            <marker date="1481144355000" expanded="true" signature="5967:7753" ph="..." />
-          </folding>
+        <state relative-caret-position="1380">
+          <caret line="98" column="30" selection-start-line="98" selection-start-column="30" selection-end-line="98" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/summary_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="573">
+        <state relative-caret-position="1005">
           <caret line="71" column="29" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="29" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
@@ -912,14 +876,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2910">
           <caret line="196" column="35" selection-start-line="196" selection-start-column="35" selection-end-line="196" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mhc_parser/methods.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -942,7 +898,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mhc_parser/pairwise_comp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
+        <state relative-caret-position="3555">
           <caret line="237" column="8" selection-start-line="237" selection-start-column="8" selection-end-line="237" selection-end-column="8" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
@@ -950,10 +906,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/modify_data.py">
+    <entry file="file://$PROJECT_DIR$/mhc_parser/pairwise_comp copy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="82" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+        <state relative-caret-position="387">
+          <caret line="212" column="0" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mhc_parser/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="54" column="19" selection-start-line="54" selection-start-column="19" selection-end-line="54" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1481839271000" expanded="true" signature="6078:7516" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/antigen_discovery/nepitope/pairwise_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3">
+          <caret line="110" column="40" selection-start-line="110" selection-start-column="40" selection-end-line="110" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mhc_parser/methods.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="129" column="27" selection-start-line="129" selection-start-column="27" selection-end-line="129" selection-end-column="27" />
           <folding />
         </state>
       </provider>
