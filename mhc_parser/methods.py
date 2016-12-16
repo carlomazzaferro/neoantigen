@@ -4,6 +4,7 @@ from mhc_parser import net_mhc_func
 import glob
 import os
 import re
+import numpy as np
 from shutil import move, rmtree
 import pandas
 
@@ -90,62 +91,98 @@ def to_df(dictionary_collection, cols, protein_id):
 
     return df
 
+
+def filter_all(collection, threshold):
+
+    new_collec = {prot: {} for prot in list(collection.keys())}
+
+    for key_ in collection.keys():
+        new_collec[key_]['High Affinity Ranges'] = collection[key_]['High Affinity Ranges']
+        new_collec[key_]['ProtSeq'] = collection[key_]['ProtSeq']
+        new_collec[key_]['Predictions'] = filter_low_affinity(collection, key_, threshold)
+
+    return new_collec
+
 ########## Pairwise comparison stuff ############
+class PairWiseComp(object):
 
-def pipe_run(prediction_collection):
-    """
-    The actual pipeline for pairwise comparisons.
-    :return:
-    """
-    proteins = list(prediction_collection.dictionary_collection.keys())
-    #for i in
+    def __init__(self, pred_col, threshold, min_nmer):
 
-    #prediction_per_protein =
+        self.pred_col = pred_col.dictionary_collection
+        self.filtered_col = filter_all(self.pred_col, threshold)
+        self.min = min_nmer
+        self.proteins = list(self.pred_col.keys())
 
-    list_dict_scores = []
-
-    for ref_df in a:
+    def pipe_run(self):
         """
-        Run only for high affinity peptides: filt.dfs are dfs from original proteins that have been filtered by a
-        user-set threshold level.
+        The actual pipeline for pairwise comparisons.
+        :return:
         """
-        list_dict_scores.append([run_pairwise_comp(ref_df), ref_df.Protein.unique()])
+        list_dict_scores = []
 
-    total_score_dict = self._add_total_score(list_dict_scores)
-    return self._return_df_from_dict_of_dicts(total_score_dict)
+        for protein in self.proteins:
 
+            list_dict_scores.append([self.run_pairwise_comp(protein)])
 
-def run_pairwise_comp(self, ref_df):
-    """
-    Pairwise comparison ran between a ref df and every over df. Every df will be the ref df at some point.
-    Match scores are saved to a dictionary, which is updated at every round.
-    :param ref_df: reference dataframe used to make comparisons with every other protein sequence
-    :return: a dictionary containing score data for a single pairwise comparison.
-    """
+        #total_score_dict = self._add_total_score(list_dict_scores)
+        return list_dict_scores
 
-    # List of lists
-    ref_df_peps = self._get_all_peptides_from_df(ref_df)  # Extract high affinity peptides
-    score_dict_per_len = self._get_protein_dict_per_len(self.filt_dfs, ref_df_peps)  # Create scores dictionary
+    def _add_total_score(self, score_dict_len):
 
-    for prot_name in self.original_proteins:
+        for dict_ in score_dict_len:
+            for key in dict_[0]:
+                dict_[0][key]['Total'] = sum(self.excl_list(dict_[0][key].values())) - dict_[0][key]['Num High AA']
 
-        prot_seq = self.original_proteins_df.ProtSeq[self.original_proteins_df.Protein == prot_name].values[0]
-        ranges = self.original_proteins_df.Ranges[self.original_proteins_df.Protein == prot_name].values[0]
-        # Ranges: index data about the location of high affinity peptides in protein being used for comparison
-        # Ranges_2: make shallow list from deep list of lists
-        ranges_2 = [item for sublist in [i[0] for i in ranges] for item in sublist]
+        return score_dict_len
 
-        matches_range = []
+    @staticmethod
+    def excl_list(it):
+        return [i for i in it if type(i) is int]
 
-        for list_pep in ref_df_peps:
-            for single_pep in list_pep:
+    def get_comp_dic(self, protein):
+        tpl = [np.array([protein] * len(self.proteins)), np.array(self.proteins)]
+        tpls = list(zip(*tpl))
 
+        dics = {}
+
+        for pair in tpls:
+            dics[pair] = {num: 0 for num in list(range(self.min, 12))}
+            dics[pair]['Num High AA'] = 0
+            dics[pair]['Matches Loc'] = []
+
+        return dics
+
+    def run_pairwise_comp(self, protein):
+        """
+        Pairwise comparison ran between a ref df and every over df. Every df will be the ref df at some point.
+        Match scores are saved to a dictionary, which is updated at every round.
+        :param protein: reference dataframe used to make comparisons with every other protein sequence
+        :return: a dictionary containing score data for a single pairwise comparison.
+        """
+
+        # List of lists
+        skel_dic = self.get_comp_dic(protein)
+        ref_pred_collection = self.filtered_col[protein]['Predictions']
+
+        for prot_name in self.proteins:
+
+            prot_seq = self.filtered_col[prot_name]['ProtSeq']
+            ranges = self.filtered_col[prot_name]['High Affinity Ranges']
+
+            # Ranges: index data about the location of high affinity peptides in protein being used for comparison
+            # Ranges_2: make shallow list from deep list of lists
+            ranges_2 = [item for sublist in [i[0] for i in ranges] for item in sublist]
+
+            matches_range = []
+
+            for pred in ref_pred_collection:
+                pep = pred.Peptide
                 high_aa_count = 0
-                pep_len = len(single_pep)
-                count = prot_seq.count(single_pep)  # Number of times a single pep occurs in the entire prot seq
+                pep_len = len(pep)
+                count = prot_seq.count(pep)  # Number of times a single pep occurs in the entire prot seq
 
                 if count > 0:  # Find locations where matches occur
-                    it = re.finditer(single_pep, prot_seq)
+                    it = re.finditer(pep, prot_seq)
 
                     for i in it:
                         present_range = list(range(i.start(), i.end()))
@@ -153,13 +190,34 @@ def run_pairwise_comp(self, ref_df):
                             high_aa_count += 1
                             matches_range.append(present_range)  # Retain match location data
 
-                self._update_dict_values_per_len(score_dict_per_len, prot_name, count,
+                self._update_dict_values_per_len(skel_dic, protein, prot_name, count,
                                                  pep_len, high_aa_count, matches_range)
 
-    return score_dict_per_len
+        return pandas.DataFrame(skel_dic).T
 
+    def get_peps(self, protein):
+        peps = []
+        collec = self.filtered_col[protein]['Predictions']
 
+        for item in collec:
+            peps.append(item.Peptide)
 
+        return peps
 
+    @staticmethod
+    def _update_dict_values_per_len(score_dict_per_len, ref_prot, prot_name, num_matches,
+                                    pep_len, high_aa_matches, matches_range):
 
+        tpl_key = (ref_prot, prot_name)
+        score_dict_per_len[tpl_key][pep_len] += num_matches
+        score_dict_per_len[tpl_key]['Num High AA'] += high_aa_matches
+        if matches_range not in score_dict_per_len[tpl_key]['Matches Loc']:  # To eliminate duplicates
+            score_dict_per_len[tpl_key]['Matches Loc'].append(matches_range)
+            # print(score_dict_per_len[prot_name]['Matches Loc'][0])
 
+def _get_protein_dict(proteins):
+    protein_list = []
+    for i in lsss_1:
+        proteins.append(i.Protein.unique()[0])
+
+    return {prot: 0 for prot in proteins}
