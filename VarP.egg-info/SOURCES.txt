@@ -1,0 +1,11 @@
+setup.py
+VarP/__init__.py
+VarP/downstream_analysis.py
+VarP/main.py
+VarP/utils.py
+VarP.egg-info/PKG-INFO
+VarP.egg-info/SOURCES.txt
+VarP.egg-info/dependency_links.txt
+VarP.egg-info/not-zip-safe
+VarP.egg-info/requires.txt
+VarP.egg-info/top_level.txt
