@@ -118,26 +118,16 @@ class PairWiseComp(object):
         The actual pipeline for pairwise comparisons.
         :return:
         """
-        list_dict_scores = []
+        list_df_scores = []
 
         for protein in self.proteins:
 
-            list_dict_scores.append([self.run_pairwise_comp(protein)])
+            dic = self.run_pairwise_comp(protein)
+            self._add_total_score(dic)
 
-        #total_score_dict = self._add_total_score(list_dict_scores)
-        return list_dict_scores
+            list_df_scores.append(pandas.DataFrame(dic).T)
 
-    def _add_total_score(self, score_dict_len):
-
-        for dict_ in score_dict_len:
-            for key in dict_[0]:
-                dict_[0][key]['Total'] = sum(self.excl_list(dict_[0][key].values())) - dict_[0][key]['Num High AA']
-
-        return score_dict_len
-
-    @staticmethod
-    def excl_list(it):
-        return [i for i in it if type(i) is int]
+        return list_df_scores
 
     def get_comp_dic(self, protein):
         tpl = [np.array([protein] * len(self.proteins)), np.array(self.proteins)]
@@ -176,6 +166,7 @@ class PairWiseComp(object):
             matches_range = []
 
             for pred in ref_pred_collection:
+
                 pep = pred.Peptide
                 high_aa_count = 0
                 pep_len = len(pep)
@@ -193,7 +184,7 @@ class PairWiseComp(object):
                 self._update_dict_values_per_len(skel_dic, protein, prot_name, count,
                                                  pep_len, high_aa_count, matches_range)
 
-        return pandas.DataFrame(skel_dic).T
+        return skel_dic
 
     def get_peps(self, protein):
         peps = []
@@ -213,11 +204,14 @@ class PairWiseComp(object):
         score_dict_per_len[tpl_key]['Num High AA'] += high_aa_matches
         if matches_range not in score_dict_per_len[tpl_key]['Matches Loc']:  # To eliminate duplicates
             score_dict_per_len[tpl_key]['Matches Loc'].append(matches_range)
-            # print(score_dict_per_len[prot_name]['Matches Loc'][0])
 
-def _get_protein_dict(proteins):
-    protein_list = []
-    for i in lsss_1:
-        proteins.append(i.Protein.unique()[0])
+    def _add_total_score(self, score_dict_len):
+        for key in score_dict_len:
+            score_dict_len[key]['Total'] = sum(self.excl_list(score_dict_len[key].values())) - \
+                                           score_dict_len[key]['Num High AA']
 
-    return {prot: 0 for prot in proteins}
+        return score_dict_len
+
+    @staticmethod
+    def excl_list(it):
+        return [i for i in it if type(i) is int]
